@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - The Nature's Edge Mirissa</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                        url('146292.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; margin: 0; 
+        }
+
+        nav {
+            position: absolute; top: 0; width: 100%;
+            background: rgba(45, 90, 39, 0.2); backdrop-filter: blur(15px);
+            padding: 20px 0; text-align: center; z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        nav a { color: white; text-decoration: none; margin: 0 25px; font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px; font-size: 14px; }
+
+        .signup-card { 
+            background: rgba(255, 255, 255, 0.98); 
+            padding: 40px; border-radius: 20px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3); 
+            width: 100%; max-width: 380px; 
+            text-align: center; animation: fadeIn 0.8s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 { color: #2d5a27; font-size: 2rem; margin-bottom: 20px; }
+
+        input { 
+            width: 100%; padding: 14px; margin: 10px 0; 
+            border: 1px solid #ddd; border-radius: 10px; 
+            box-sizing: border-box; font-size: 16px;
+            background: #f9f9f9; transition: 0.3s;
+        }
+
+        input:focus { outline: none; border-color: #2d5a27; background: #fff; }
+
+        /* Error Message Styling */
+        #error-msg {
+            color: #ff4d4d; font-size: 0.85rem; font-weight: bold;
+            margin-bottom: 10px; text-align: left; display: none;
+            padding-left: 5px; line-height: 1.4;
+        }
+
+        .btn { 
+            background: #2d5a27; color: white; border: none; 
+            padding: 15px; width: 100%; border-radius: 10px; 
+            cursor: pointer; font-size: 18px; font-weight: bold;
+            transition: 0.3s; margin-top: 10px;
+        }
+        .btn:hover { background: #3e7a37; transform: translateY(-2px); }
+
+        .login-link { margin-top: 20px; font-size: 15px; color: #666; }
+        .login-link a { color: #2d5a27; text-decoration: none; font-weight: bold; }
+        /* Global Professional Modal */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
+            z-index: 9999; justify-content: center; align-items: center;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95); padding: 35px; border-radius: 25px; 
+            width: 90%; max-width: 400px; text-align: center; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            animation: popupAnim 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popupAnim {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon { font-size: 60px; margin-bottom: 20px; }
+        .success-icon { color: #28a745; }
+        .error-icon { color: #d9534f; }
+        .info-icon { color: #007bff; }
+
+        .modal-btn {
+            background: #2d5a27; color: white; border: none; padding: 12px 30px; 
+            border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px;
+            transition: 0.3s; width: 100%; font-size: 16px;
+        }
+        .modal-btn:hover { background: #1e3d1a; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+
+    <div class="signup-card">
+        <h2>Create Account</h2>
+        <form id="signupForm">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="email" id="email" placeholder="Email Address" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <input type="password" id="confirm_password" placeholder="Confirm Password" required>
+            
+            <div id="error-msg"></div>
+
+            <button type="submit" class="btn" id="signupBtn">Sign Up</button>
+        </form>
+        <div class="login-link">
+            Already have an account? <a href="login.html">Login</a>
+        </div>
+    </div>
+
+    <div id="globalModal" class="modal-overlay">
+        <div class="modal-content">
+            <div id="globalIcon" class="modal-icon"></div>
+            <h2 id="globalTitle" style="margin: 0; color: #333;"></h2>
+            <p id="globalText" style="color: #666; margin-top: 10px; font-size: 16px;"></p>
+            <button class="modal-btn" onclick="closeGlobalModal()">OK</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirm_password = document.getElementById('confirm_password').value;
+            const errorDiv = document.getElementById('error-msg');
+            const signupBtn = document.getElementById('signupBtn');
+
+            // Reset UI
+            errorDiv.style.display = 'none';
+            document.querySelectorAll('input').forEach(i => i.style.borderColor = '#ddd');
+
+            // 1. Password Matching Check
+            if (password !== confirm_password) {
+                errorDiv.innerText = "Passwords do not match!";
+                errorDiv.style.display = 'block';
+                document.getElementById('confirm_password').style.borderColor = '#ff4d4d';
+                return;
+            }
+
+            signupBtn.innerText = "Processing...";
+            signupBtn.disabled = true;
+
+            // signup.html හි fetch කරන කොටස මෙසේ විය යුතුයි:
+
+            // signup.html හි fetch කොටස මේ විදිහට වෙනස් කරන්න
+            try {
+                const response = await fetch('http://localhost:3000/register', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json' // මෙය අමතර ආරක්ෂාවට
+                    },
+                    body: JSON.stringify({ 
+                        username: username.trim(), // හිස්තැන් ඉවත් කරයි
+                        email: email.trim().toLowerCase(), // සිම්පල් අකුරු කරයි
+                        password: password 
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // සාර්ථක නම් Popup එක පෙන්වයි
+                    showPopup("Success!", "Account created successfully! Redirecting...", "success");
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2500);
+                } else {
+                    // වැරදීමක් නම් සර්වර් එකෙන් එන නියම පණිවිඩය පෙන්වයි
+                    errorDiv.innerText = data.message;
+                    errorDiv.style.display = 'block';
+                    document.getElementById('email').style.borderColor = '#ff4d4d';
+                    
+                    // Popup එකක් ලෙසද පෙන්විය හැක
+                    showPopup("Signup Failed", data.message, "error");
+                }
+            } catch (err) {
+                console.error("Signup Error:", err);
+                showPopup("Connection Error", "Server is not responding. Please try again.", "error");
+            } finally {
+                signupBtn.innerText = "Sign Up";
+                signupBtn.disabled = false;
+            }
+        });
+
+        // Professional Popup පෙන්වීමේ function එක
+        function showPopup(title, text, type) {
+            const modal = document.getElementById('globalModal');
+            const icon = document.getElementById('globalIcon');
+            const titleEl = document.getElementById('globalTitle');
+            const textEl = document.getElementById('globalText');
+
+            titleEl.innerText = title;
+            textEl.innerText = text;
+
+            // Type එක අනුව icon එක සහ පාට වෙනස් කිරීම
+            if (type === 'success') {
+                icon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                icon.className = 'modal-icon success-icon';
+            } else if (type === 'error') {
+                icon.innerHTML = '<i class="fas fa-times-circle"></i>';
+                icon.className = 'modal-icon error-icon';
+            } else {
+                icon.innerHTML = '<i class="fas fa-info-circle"></i>';
+                icon.className = 'modal-icon info-icon';
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeGlobalModal() {
+            document.getElementById('globalModal').style.display = 'none';
+        }
+
+        // Input එක වෙනස් කරනවිට රතු පැහැය ඉවත් කිරීම
+        document.querySelectorAll('input').forEach(input => {
+            input.oninput = () => {
+                document.getElementById('error-msg').style.display = 'none';
+                input.style.borderColor = '#ddd';
+            };
+        });
+    </script>
+</body>
+</html>

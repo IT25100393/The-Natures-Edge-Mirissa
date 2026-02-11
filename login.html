@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - The Nature's Edge Mirissa</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                        url('146292.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; margin: 0; 
+        }
+
+        /* Glassmorphism Navigation */
+        nav {
+            position: absolute; top: 0; width: 100%;
+            background: rgba(45, 90, 39, 0.2); backdrop-filter: blur(15px);
+            padding: 20px 0; text-align: center; z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        nav a { color: white; text-decoration: none; margin: 0 25px; font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px; font-size: 14px; }
+
+        /* Login Card */
+        .login-card { 
+            background: rgba(255, 255, 255, 0.98); 
+            padding: 40px; border-radius: 20px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3); 
+            width: 100%; max-width: 380px; text-align: center; 
+        }
+
+        h2 { color: #2d5a27; font-size: 2.2rem; margin-bottom: 25px; }
+
+        .form-group { position: relative; margin-bottom: 20px; }
+
+        input { 
+            width: 100%; padding: 14px; 
+            border: 1px solid #ddd; border-radius: 10px; 
+            box-sizing: border-box; font-size: 16px; background: #f9f9f9;
+        }
+
+        input:focus { outline: none; border-color: #2d5a27; background: #fff; }
+
+        /* Input එක යටින් එන Error Message එක */
+        #error-msg {
+            color: #ff4d4d;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            display: none; 
+            text-align: left;
+            padding-left: 5px;
+        }
+
+        .btn { 
+            background: #2d5a27; color: white; border: none; 
+            padding: 15px; width: 100%; border-radius: 10px; 
+            cursor: pointer; font-size: 18px; font-weight: bold;
+            transition: 0.3s; margin-top: 10px;
+        }
+        .btn:hover { background: #3e7a37; transform: translateY(-2px); }
+
+        p { margin-top: 20px; font-size: 15px; color: #666; }
+        p a { color: #2d5a27; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+
+    <div class="login-card">
+        <h2>Login</h2>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <input type="email" id="email" placeholder="Email Address" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+            
+            <div id="error-msg">Invalid Email or Password!</div>
+
+            <button type="submit" class="btn">Login</button>
+            <p><a href="forgot-password.html">Forgot Password?</a></p>
+        </form>
+        <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+    </div>
+
+    <script>
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error-msg');
+
+            errorDiv.style.display = 'none';
+
+            try {
+                const response = await fetch('http://localhost:3000/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // 1. Token එක සහ User විස්තර සේව් කිරීම
+                    localStorage.setItem('token', data.token);
+                    
+                    // Admin ට username එකක් නැති නිසා Guest දත්ත පමණක් මෙසේ සේව් කරයි
+                    if (data.username) {
+                        localStorage.setItem('user', JSON.stringify({
+                            username: data.username,
+                            email: data.email
+                        }));
+                    }
+
+                    // 2. සර්වර් එකෙන් එන redirectUrl එකට යොමු කිරීම (Redirect)
+                    // Admin නම් 'admin-dashboard.html' වෙතද, Guest නම් 'dashboard.html' වෙතද යයි.
+                    window.location.href = data.redirectUrl; 
+
+                } else {
+                    // Error Message එක පෙන්වීම
+                    errorDiv.innerText = data.message || "Invalid Email or Password!";
+                    errorDiv.style.display = 'block';
+                    
+                    document.getElementById('email').style.borderColor = '#ff4d4d';
+                    document.getElementById('password').style.borderColor = '#ff4d4d';
+                }
+            } catch (err) {
+                errorDiv.innerText = "Server Error. Please try again later.";
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        // User නැවත ටයිප් කරන විට Error borders ඉවත් කිරීම
+        document.querySelectorAll('input').forEach(input => {
+            input.oninput = () => {
+                document.getElementById('error-msg').style.display = 'none';
+                input.style.borderColor = '#ddd';
+            };
+        });
+    </script>
+</body>
+</html>
