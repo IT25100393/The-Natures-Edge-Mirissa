@@ -109,7 +109,7 @@
         // සියලුම Reviews සර්වර් එකෙන් ලබාගැනීම
         async function fetchAllReviews() {
             try {
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/get-reviews');
+                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/get-reviews');
                 const reviews = await res.json();
                 const container = document.getElementById('adminReviewList');
                 container.innerHTML = reviews.length === 0 ? "<p>No reviews found.</p>" : "";
@@ -148,7 +148,7 @@
         async function processDelete() {
             closeDeleteModal();
             try {
-                const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/delete-review/${reviewIdToDelete}`, { 
+                const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/delete-review/${reviewIdToDelete}`, { 
                     method: 'DELETE' 
                 });
                 if (res.ok) {
@@ -185,4 +185,5 @@
         window.onload = fetchAllReviews;
     </script>
 </body>
+
 </html>
