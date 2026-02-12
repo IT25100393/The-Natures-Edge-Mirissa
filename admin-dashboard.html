@@ -295,7 +295,7 @@
         function closeGalleryModal() { document.getElementById('galleryModal').style.display = "none"; }
 
         async function loadCurrentPhotos(f, a) {
-            const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/get-gallery-photos?floor=${f}&area=${a}`);
+            const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/get-gallery-photos?floor=${f}&area=${a}`);
             const photos = await res.json();
             document.getElementById('currentPhotosList').innerHTML = photos.length ? photos.map(p => `
                 <div class="photo-wrapper"><img src="https://serious-florie-thenaturesedge-d1a60d22.koyeb.app${p.imageUrl}"><button class="delete-btn-photo" onclick="openConfirm('deletePhoto', '${p._id}')">&times;</button></div>
@@ -324,5 +324,6 @@
 </body>
 
 </html>
+
 
 
