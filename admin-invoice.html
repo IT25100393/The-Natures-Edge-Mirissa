@@ -87,7 +87,7 @@
     <script>
         async function fetchStatement() {
             try {
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/all-bookings');
+                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/all-bookings');
                 const bookings = await res.json();
                 const container = document.getElementById('statementContainer');
                 container.innerHTML = "";
@@ -218,4 +218,5 @@
         window.onload = fetchStatement;
     </script>
 </body>
+
 </html>
