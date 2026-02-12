@@ -272,8 +272,8 @@
             try {
                 let url = '', method = 'DELETE', body = null;
                 if (actionType === 'cancelBooking') { url = `https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/cancel-booking/${actionTargetId}`; method = 'PUT'; body = JSON.stringify({ reason }); }
-                else if (actionType === 'deleteMessage') { url = `https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/delete-message/${actionTargetId}`; }
-                else if (actionType === 'deletePhoto') { url = `https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/delete-photo/${actionTargetId}`; }
+                else if (actionType === 'deleteMessage') { url = `https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/delete-message/${actionTargetId}`; }
+                else if (actionType === 'deletePhoto') { url = `https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/delete-photo/${actionTargetId}`; }
 
                 const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body });
                 if (res.ok) { showPopup("Success", "Action completed successfully.", "success"); location.reload(); }
@@ -324,6 +324,7 @@
 </body>
 
 </html>
+
 
 
 
