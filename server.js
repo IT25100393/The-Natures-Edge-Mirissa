@@ -17,7 +17,7 @@ const twilio = require('twilio');
 
 // Initialize Express App
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000; 
 
 // Twilio Configuration
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
