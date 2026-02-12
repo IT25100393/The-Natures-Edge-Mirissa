@@ -767,7 +767,7 @@ app.listen(PORT, () => {
     console.log(`📱 WhatsApp: Configured with Twilio\n`);
 });
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
+// uploads folder එක ඇතුළේ තියෙන පින්තූර ලෝඩ් කරන්න මේක ඕනේ
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
