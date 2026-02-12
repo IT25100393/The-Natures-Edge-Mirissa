@@ -762,3 +762,7 @@ app.listen(PORT, () => {
     console.log(`📧 Email: Configured with Gmail`);
     console.log(`📱 WhatsApp: Configured with Twilio\n`);
 });
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
