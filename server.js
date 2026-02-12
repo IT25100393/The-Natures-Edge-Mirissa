@@ -32,6 +32,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use('/uploads', express.static('uploads'));
+app.use(express.static(path.join(__dirname)));
 
 // ===========================================
 // DATABASE CONNECTION
@@ -753,7 +754,10 @@ app.post('/reset-password', async (req, res) => {
 // ===========================================
 // SERVER START
 // ===========================================
-app.get('/', (req, res) => res.send('🌿 Nature\'s Edge Server Running!'));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 app.listen(PORT, () => {
     console.log(`\n✅ Server is running on http://localhost:${PORT}`);
@@ -766,3 +770,4 @@ app.listen(PORT, () => {
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
+
