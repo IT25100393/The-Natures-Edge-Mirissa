@@ -207,13 +207,13 @@
 
         async function fetchAdminData() {
             try {
-                const statsRes = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/stats');
+                const statsRes = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/stats');
                 const stats = await statsRes.json();
                 document.getElementById('statTotalBookings').innerText = stats.totalBookings;
                 document.getElementById('statRevenue').innerText = stats.totalRevenue.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
                 document.getElementById('statReviews').innerText = stats.totalReviews || 0;
 
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/all-bookings');
+                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/all-bookings');
                 const bookings = await res.json();
                 const list = document.getElementById('bookingList');
                 list.innerHTML = "";
@@ -232,7 +232,7 @@
         }
 
         async function fetchMessages() {
-            const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/messages');
+            const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/messages');
             const messages = await res.json();
             const container = document.getElementById('messageListContainer');
             container.innerHTML = messages.length ? "" : "<p>No messages yet.</p>";
@@ -282,7 +282,7 @@
 
         async function updatePrices() {
             const data = { room1st: document.getElementById('price1st').value, roomGF: document.getElementById('priceGF').value, roomFull: document.getElementById('priceFull').value };
-            const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/update-prices', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/update-prices', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
             if (res.ok) showPopup("Success", "Villa prices updated successfully!", "success");
         }
 
@@ -295,7 +295,7 @@
         function closeGalleryModal() { document.getElementById('galleryModal').style.display = "none"; }
 
         async function loadCurrentPhotos(f, a) {
-            const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/get-gallery-photos?floor=${f}&area=${a}`);
+            const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/get-gallery-photos?floor=${f}&area=${a}`);
             const photos = await res.json();
             document.getElementById('currentPhotosList').innerHTML = photos.length ? photos.map(p => `
                 <div class="photo-wrapper"><img src="https://serious-florie-thenaturesedge-d1a60d22.koyeb.app${p.imageUrl}"><button class="delete-btn-photo" onclick="openConfirm('deletePhoto', '${p._id}')">&times;</button></div>
@@ -324,3 +324,4 @@
 </body>
 
 </html>
+
