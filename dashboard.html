@@ -298,7 +298,7 @@
 
         async function loadProfilePic(email) {
             try {
-                const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/get-user-details?email=${email}`);
+                const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/get-user-details?email=${email}`);
                 const data = await res.json();
                 if (res.ok && data.profilePic) {
                     const img = document.getElementById('navUserImg');
@@ -311,7 +311,7 @@
 
         async function fetchBookedDates() {
             try {
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/get-booked-dates');
+                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/get-booked-dates');
                 allBookingsData = await res.json();
                 updateCalendarRestrictions();
             } catch (err) {}
@@ -336,7 +336,7 @@
         }
 
         async function loadPricesFromServer() {
-            const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/get-prices');
+            const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/get-prices');
             currentPrices = await res.json();
             document.querySelector('#roomType option[value="1st Floor"]').innerText = `1st Floor Only ($${currentPrices['1st Floor']}/night)`;
             document.querySelector('#roomType option[value="Ground Floor"]').innerText = `Ground Floor Only ($${currentPrices['Ground Floor']}/night)`;
@@ -353,7 +353,7 @@
         }
 
         async function fetchUserBookings(email) {
-            const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/user-bookings?email=${email}`);
+            const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/user-bookings?email=${email}`);
             const bookings = await res.json();
             const list = document.getElementById('userBookingsList');
             list.innerHTML = bookings.length ? "" : "<tr><td colspan='6' style='text-align:center;'>No bookings found.</td></tr>";
@@ -390,7 +390,7 @@
             };
 
             try {
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/add-booking', {
+                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/add-booking', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(bookingData)
                 });
@@ -408,7 +408,7 @@
             const reason = document.getElementById('cancelReasonInput').value;
             if (!reason.trim()) return showPopup("Wait", "Please provide a reason!", "info");
             try {
-                const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/cancel-booking/${bookingIdToCancel}`, {
+                const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/cancel-booking/${bookingIdToCancel}`, {
                     method: 'PUT', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ reason })
                 });
@@ -425,7 +425,7 @@
             const comment = document.getElementById('revComment').value;
             if (!country || !comment) return showPopup("Wait", "Please select country and write a review!", "info");
             try {
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/add-review', {
+                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/add-review', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ token: localStorage.getItem('token'), rating: document.getElementById('revRating').value, country, comment })
                 });
@@ -436,4 +436,5 @@
         function logout() { localStorage.clear(); window.location.href = 'login.html'; }
     </script>
 </body>
+
 </html>
