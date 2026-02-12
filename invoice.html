@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Invoice - The Nature's Edge</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; display: flex; justify-content: center; padding: 50px; }
+        .invoice-card { background: white; width: 600px; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid #003366; }
+        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #eee; padding-bottom: 20px; }
+        .hotel-name { color: #003366; margin: 0; }
+        .details { margin-top: 30px; line-height: 2.0; }
+        .details b { color: #555; width: 180px; display: inline-block; }
+        .price-tag { font-size: 1.5rem; color: #2d5a27; font-weight: bold; margin-top: 20px; border-top: 2px dashed #eee; padding-top: 15px; }
+        .btn-group { margin-top: 40px; display: flex; gap: 15px; }
+        .btn { padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; text-align: center; }
+        .btn-print { background: #003366; color: white; }
+        .btn-home { background: #6c757d; color: white; }
+        @media print { .btn-group { display: none; } body { background: white; padding: 0; } .invoice-card { box-shadow: none; border: none; width: 100%; } }
+    </style>
+</head>
+<body>
+    <div class="invoice-card">
+        <div class="header">
+            <div>
+                <h1 class="hotel-name">The Nature's Edge</h1>
+                <p>Mirissa, Sri Lanka</p>
+            </div>
+            <div style="text-align: right;">
+                <h3 style="color: #28a745;">BOOKING CONFIRMED</h3>
+                <p id="invoice-date"></p>
+            </div>
+        </div>
+
+        <div class="details">
+            <p><b>Guest Name:</b> <span id="guest-name"></span></p>
+            <p><b>Country / Nationality:</b> <span id="guest-country"></span></p> <p><b>Villa Option:</b> <span id="room-type"></span></p>
+            <p><b>Check-in:</b> <span id="check-in"></span></p>
+            <p><b>Check-out:</b> <span id="check-out"></span></p>
+            <p><b>No. of Guests:</b> <span id="guests"></span></p>
+            <div class="price-tag">
+                <span>Total Amount:</span> <span id="total-price"></span> </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-print" onclick="window.print()">Print / Save as PDF</button>
+            <a href="dashboard.html" class="btn btn-home">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        // LocalStorage එකෙන් දත්ත ලබාගැනීම
+        const bookingRaw = localStorage.getItem('lastBooking');
+        const userRaw = localStorage.getItem('user');
+
+        if (bookingRaw && userRaw) {
+            const booking = JSON.parse(bookingRaw);
+            const user = JSON.parse(userRaw);
+
+            // UI එකට දත්ත ඇතුළත් කිරීම
+            document.getElementById('guest-name').innerText = booking.guestDetails.fullName || user.username;
+            
+            // මෙන්න මෙතනින් තමයි රට පෙන්වන්නේ
+            document.getElementById('guest-country').innerText = booking.guestDetails.nationality || "Not Provided"; 
+            
+            document.getElementById('room-type').innerText = booking.roomType;
+            document.getElementById('check-in').innerText = new Date(booking.checkIn).toLocaleDateString();
+            document.getElementById('check-out').innerText = new Date(booking.checkOut).toLocaleDateString();
+            document.getElementById('guests').innerText = booking.guests;
+            document.getElementById('total-price').innerText = `$ ${Number(booking.totalPrice).toLocaleString()} USD`;
+            
+            document.getElementById('invoice-date').innerText = "Issued: " + new Date().toLocaleDateString();
+        } else {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>
