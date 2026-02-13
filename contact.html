@@ -6,52 +6,367 @@
     <title>Contact Us - The Nature's Edge Mirissa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('146292.jpg') no-repeat center center fixed; background-size: cover; color: white; min-height: 100vh; }
-        
-        nav { background: rgba(45, 90, 39, 0.2); backdrop-filter: blur(15px); padding: 20px 0; text-align: center; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-        nav a { color: white; text-decoration: none; margin: 0 25px; font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px; font-size: 14px; transition: 0.3s; }
-        nav a:hover { color: #a2d2a2; }
-
-        .contact-container { max-width: 700px; margin: 50px auto; background: rgba(255, 255, 255, 0.95); padding: 40px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); color: #333; animation: fadeIn 0.8s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        h1 { color: #2d5a27; text-align: center; font-size: 2.5rem; margin-bottom: 10px; }
-        .subtitle { text-align: center; color: #666; margin-bottom: 30px; }
-        .form-group { margin-bottom: 20px; text-align: left; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; color: #2d5a27; }
-        input[type="text"], input[type="email"], textarea { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 16px; background: #f9f9f9; transition: 0.3s; }
-        input:focus, textarea:focus { outline: none; border-color: #2d5a27; background: #fff; }
-        
-        button { background-color: #2d5a27; color: white; padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-size: 18px; font-weight: bold; width: 100%; transition: 0.3s; box-shadow: 0 4px 15px rgba(45, 90, 39, 0.2); }
-        button:hover { background-color: #1e3d1a; transform: translateY(-2px); }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
-
-        .contact-details { margin-top: 30px; padding-top: 25px; border-top: 1px solid #eee; display: flex; justify-content: space-around; flex-wrap: wrap; }
-        .info-item { text-align: center; margin: 10px; min-width: 150px; }
-        .info-item strong { display: block; color: #2d5a27; margin-bottom: 5px; }
-        .info-item p { margin: 0; color: #555; font-size: 0.95rem; }
-
-        /* --- Global Popup Styles --- */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
-            z-index: 9999; justify-content: center; align-items: center;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                        url('146292.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(45, 90, 39, 0.2);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 15px 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: clamp(0.75rem, 2vw, 0.9rem);
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #a2d2a2;
+        }
+
+        /* Contact Container */
+        .contact-container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            color: #333;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #2d5a27;
+            text-align: center;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2d5a27;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            background: #f9f9f9;
+            transition: 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2d5a27;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(45, 90, 39, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Submit Button */
+        button[type="submit"] {
+            background-color: #2d5a27;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            font-weight: bold;
+            width: 100%;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(45, 90, 39, 0.2);
+        }
+
+        button[type="submit"]:hover:not(:disabled) {
+            background-color: #1e3d1a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(45, 90, 39, 0.3);
+        }
+
+        button[type="submit"]:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        button[type="submit"].success {
+            background-color: #28a745;
+        }
+
+        /* Contact Details */
+        .contact-details {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .info-item {
+            text-align: center;
+            min-width: 150px;
+            flex: 1;
+        }
+
+        .info-item strong {
+            display: block;
+            color: #2d5a27;
+            margin-bottom: 5px;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+
+        .info-item p {
+            margin: 0;
+            color: #555;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+        }
+
+        .info-item a {
+            color: #555;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .info-item a:hover {
+            color: #2d5a27;
+        }
+
+        /* Modal Popup Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
         .modal-content {
-            background: white; padding: 35px; border-radius: 25px; width: 90%; max-width: 400px;
-            text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
             animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        @keyframes popIn { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-icon { font-size: 60px; margin-bottom: 20px; }
-        .success-icon { color: #28a745; }
-        .error-icon { color: #ff4d4d; }
-        .modal-btn {
-            background: #2d5a27; color: white; border: none; padding: 12px 30px;
-            border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px;
-            transition: 0.3s; width: 100%; font-size: 16px;
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
-        .modal-btn:hover { background: #1e3d1a; transform: translateY(-2px); }
+
+        .modal-icon {
+            font-size: clamp(50px, 12vw, 60px);
+            margin-bottom: 20px;
+        }
+
+        .success-icon {
+            color: #28a745;
+        }
+
+        .error-icon {
+            color: #ff4d4d;
+        }
+
+        .modal-content h2 {
+            margin: 0;
+            color: #333;
+            font-size: clamp(1.3rem, 4vw, 1.6rem);
+        }
+
+        .modal-content p {
+            color: #666;
+            margin-top: 10px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            line-height: 1.5;
+        }
+
+        .modal-btn {
+            background: #2d5a27;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+            width: 100%;
+            font-size: clamp(0.95rem, 2.5vw, 1rem);
+        }
+
+        .modal-btn:hover {
+            background: #1e3d1a;
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            nav {
+                padding: 12px 10px;
+            }
+
+            nav a {
+                margin: 0 8px;
+            }
+
+            .contact-container {
+                margin: 30px 15px;
+                padding: 30px 20px;
+                border-radius: 15px;
+            }
+
+            .form-group {
+                margin-bottom: 18px;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            textarea {
+                padding: 12px;
+            }
+
+            button[type="submit"] {
+                padding: 14px;
+            }
+
+            .contact-details {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .info-item {
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .contact-container {
+                margin: 20px 10px;
+                padding: 25px 15px;
+            }
+
+            .modal-content {
+                padding: 25px 20px;
+            }
+
+            .contact-details {
+                margin-top: 25px;
+                padding-top: 20px;
+            }
+        }
+
+        /* Accessibility */
+        button:focus,
+        input:focus,
+        textarea:focus {
+            outline: 2px solid #2d5a27;
+            outline-offset: 2px;
+        }
+
+        /* Loading State */
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
@@ -68,46 +383,56 @@
 
         <form id="contactForm" onsubmit="handleContactSubmit(event)">
             <div class="form-group">
-                <label>Your Name</label>
-                <input type="text" id="name" placeholder="Enter your full name" required>
+                <label for="name">Your Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
             </div>
 
             <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" id="email" placeholder="Enter your email" required>
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
             </div>
 
             <div class="form-group">
-                <label>Subject (Optional)</label>
-                <input type="text" id="subject" placeholder="What is this about?">
+                <label for="subject">Subject (Optional)</label>
+                <input type="text" id="subject" name="subject" placeholder="What is this about?">
             </div>
 
             <div class="form-group">
-                <label>Your Message / Inquiry</label>
-                <textarea id="message" rows="5" placeholder="Tell us about your dates and guests..." required></textarea>
+                <label for="message">Your Message / Inquiry</label>
+                <textarea id="message" name="message" rows="5" placeholder="Tell us about your dates and guests..." required></textarea>
             </div>
 
             <button type="submit" id="submitBtn">Send Message</button>
         </form>
 
         <div class="contact-details">
-            <div class="info-item"><strong>Phone</strong><p>071 752 6757</p></div>
-            <div class="info-item"><strong>Email</strong><p>tharushajayod1@gmail.com</p></div>
-            <div class="info-item"><strong>Location</strong><p>Mirissa, Sri Lanka</p></div>
+            <div class="info-item">
+                <strong>Phone</strong>
+                <p><a href="tel:0717526757">071 752 6757</a></p>
+            </div>
+            <div class="info-item">
+                <strong>Email</strong>
+                <p><a href="mailto:tharushajayod1@gmail.com">tharushajayod1@gmail.com</a></p>
+            </div>
+            <div class="info-item">
+                <strong>Location</strong>
+                <p>Mirissa, Sri Lanka</p>
+            </div>
         </div>
     </div>
 
-    <div id="statusModal" class="modal-overlay">
+    <!-- Status Modal -->
+    <div id="statusModal" class="modal-overlay" onclick="handleModalClick(event)">
         <div class="modal-content">
             <div id="statusIcon" class="modal-icon"></div>
-            <h2 id="statusTitle" style="margin: 0; color: #333;"></h2>
-            <p id="statusText" style="color: #666; margin-top: 10px; font-size: 16px;"></p>
+            <h2 id="statusTitle"></h2>
+            <p id="statusText"></p>
             <button class="modal-btn" onclick="closeStatusModal()">OK</button>
         </div>
     </div>
 
     <script>
-        // Popup පෙන්වීමේ function එක
+        // Show Popup Function
         function showPopup(title, text, type) {
             const modal = document.getElementById('statusModal');
             const icon = document.getElementById('statusIcon');
@@ -126,58 +451,119 @@
             }
 
             modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
         }
 
+        // Close Modal Function
         function closeStatusModal() {
-            document.getElementById('statusModal').style.display = 'none';
+            const modal = document.getElementById('statusModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
         }
 
+        // Handle Modal Background Click
+        function handleModalClick(event) {
+            if (event.target.id === 'statusModal') {
+                closeStatusModal();
+            }
+        }
+
+        // Close on Escape Key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeStatusModal();
+            }
+        });
+
+        // Handle Form Submission
         async function handleContactSubmit(event) {
             event.preventDefault();
 
             const submitBtn = document.getElementById('submitBtn');
+            const form = document.getElementById('contactForm');
+            
             const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                subject: document.getElementById('subject').value || "Villa Inquiry",
-                message: document.getElementById('message').value
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                subject: document.getElementById('subject').value.trim() || "Villa Inquiry",
+                message: document.getElementById('message').value.trim()
             };
 
-            // UI එක Update කිරීම
-            submitBtn.innerText = "Sending...";
+            // Validate data
+            if (!formData.name || !formData.email || !formData.message) {
+                showPopup("Error", "Please fill in all required fields.", "error");
+                return;
+            }
+
+            // Update button state - Loading
+            const originalText = submitBtn.innerText;
+            submitBtn.innerHTML = 'Sending<span class="loading-spinner"></span>';
             submitBtn.disabled = true;
 
             try {
                 const response = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/contact', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify(formData)
                 });
 
                 if (response.ok) {
-                    // බොත්තම වහාම මාරු කරයි
+                    // Success state
                     submitBtn.innerText = "Message Sent ✅";
-                    submitBtn.style.backgroundColor = "#28a745";
+                    submitBtn.classList.add('success');
                     
-                    // Popup එක පෙන්වයි
-                    showPopup("Success!", "Your message has been sent successfully. We will contact you soon!", "success");
+                    // Show success popup
+                    showPopup(
+                        "Success!", 
+                        "Your message has been sent successfully. We will contact you soon!", 
+                        "success"
+                    );
 
-                    // තත්පර 3කට පසු reload කරයි
+                    // Reset form after a short delay
                     setTimeout(() => {
-                        location.reload(); 
-                    }, 3000);
+                        form.reset();
+                        submitBtn.innerText = originalText;
+                        submitBtn.classList.remove('success');
+                        submitBtn.disabled = false;
+                    }, 2000);
+
                 } else {
-                    const result = await response.json();
-                    showPopup("Error", result.error || "Failed to send message.", "error");
-                    submitBtn.innerText = "Send Message";
+                    // Handle server error
+                    let errorMessage = "Failed to send message. Please try again.";
+                    try {
+                        const result = await response.json();
+                        errorMessage = result.error || errorMessage;
+                    } catch (e) {
+                        // If response is not JSON, use default error message
+                    }
+                    
+                    showPopup("Error", errorMessage, "error");
+                    submitBtn.innerText = originalText;
                     submitBtn.disabled = false;
                 }
             } catch (err) {
-                showPopup("Server Error", "Could not connect to the server.", "error");
-                submitBtn.innerText = "Send Message";
+                console.error('Contact form error:', err);
+                showPopup(
+                    "Connection Error", 
+                    "Could not connect to the server. Please check your internet connection and try again.", 
+                    "error"
+                );
+                submitBtn.innerText = originalText;
                 submitBtn.disabled = false;
             }
         }
+
+        // Form validation on input
+        document.getElementById('contactForm').addEventListener('input', function(e) {
+            const input = e.target;
+            if (input.validity.valid) {
+                input.style.borderColor = '#ddd';
+            } else {
+                input.style.borderColor = '#ff4d4d';
+            }
+        });
     </script>
 </body>
 </html>
