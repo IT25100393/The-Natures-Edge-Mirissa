@@ -17,6 +17,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
+app.use(express.static(path.join(__dirname, './')));
 
 // Create uploads directory if it doesn't exist
 if (!fs.existsSync('uploads')) {
@@ -556,12 +557,10 @@ app.delete('/admin/delete-photo/:id', async (req, res) => {
 });
 
 // Health Check
+
+
 app.get('/', (req, res) => {
-    res.json({ 
-        message: 'The Nature\'s Edge API is running',
-        version: '1.0.0',
-        status: 'active'
-    });
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Error Handler
@@ -575,3 +574,4 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });
+
