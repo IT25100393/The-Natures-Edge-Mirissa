@@ -5,12 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery - The Nature's Edge Mirissa</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            margin: 0; padding: 0;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
                         url('146292.jpg') no-repeat center center fixed;
-            background-size: cover; color: white;
+            background-size: cover;
+            color: white;
+            min-height: 100vh;
         }
 
         /* Navigation */
@@ -18,109 +29,421 @@
             background: rgba(45, 90, 39, 0.2);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            padding: 20px 0; text-align: center;
-            position: sticky; top: 0; z-index: 1000;
+            padding: 15px 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        nav a {
-            color: white; text-decoration: none; margin: 0 25px;
-            font-weight: bold; text-transform: uppercase; font-size: 14px; transition: 0.3s;
-        }
-        nav a:hover { color: #a2d2a2; }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        h1 { text-align: center; font-size: 3rem; margin-bottom: 40px; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: clamp(0.75rem, 2vw, 0.9rem);
+            letter-spacing: 1.5px;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #a2d2a2;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: clamp(2rem, 6vw, 3rem);
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
 
         /* Filter Buttons */
-        .filter-buttons { text-align: center; margin-bottom: 40px; }
-        .btn {
-            padding: 12px 30px; margin: 5px; border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 30px; background: rgba(255, 255, 255, 0.1); color: white;
-            font-weight: bold; cursor: pointer; backdrop-filter: blur(5px); transition: 0.3s;
+        .filter-buttons {
+            text-align: center;
+            margin-bottom: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
         }
-        .btn.active, .btn:hover { background: #2d5a27; border-color: #2d5a27; box-shadow: 0 5px 15px rgba(45, 90, 39, 0.4); }
+
+        .btn {
+            padding: 12px 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-weight: bold;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn.active,
+        .btn:hover {
+            background: #2d5a27;
+            border-color: #2d5a27;
+            box-shadow: 0 5px 15px rgba(45, 90, 39, 0.4);
+            transform: translateY(-2px);
+        }
 
         /* Floor Sections */
         .floor-section {
-            display: none; background: rgba(255, 255, 255, 0.95);
-            padding: 30px; border-radius: 20px; margin-bottom: 50px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); color: #333;
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            color: #333;
         }
-        .floor-section.active { display: block; animation: fadeIn 0.6s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .section-title { color: #2d5a27; border-bottom: 2px solid #2d5a27; padding-bottom: 15px; }
-        .facilities { background: #f0f4f0; color: #2d5a27; padding: 15px; border-left: 5px solid #2d5a27; margin: 20px 0; border-radius: 8px; font-weight: bold; }
+        .floor-section.active {
+            display: block;
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            color: #2d5a27;
+            border-bottom: 2px solid #2d5a27;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+        }
+
+        .facilities {
+            background: #f0f4f0;
+            color: #2d5a27;
+            padding: 15px;
+            border-left: 5px solid #2d5a27;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            line-height: 1.6;
+        }
 
         /* Gallery Grid */
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-        
-        /* Category Items */
-        .gallery-item {
-            background: #ffffff; padding: 12px; border-radius: 15px;
-            text-align: center; transition: 0.4s; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            position: relative; cursor: pointer; overflow: hidden;
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
         }
-        .gallery-item:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0,0,0,0.2); }
-        .gallery-item img { width: 100%; height: 220px; object-fit: cover; border-radius: 10px; }
-        .gallery-item p { margin-top: 12px; font-size: 1.1rem; color: #2d5a27; font-weight: bold; }
+
+        /* Gallery Items */
+        .gallery-item {
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 15px;
+            text-align: center;
+            transition: 0.4s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 10px;
+            display: block;
+        }
+
+        .gallery-item p {
+            margin-top: 12px;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            color: #2d5a27;
+            font-weight: bold;
+        }
 
         /* Hover Overlay */
         .overlay {
-            position: absolute; top: 12px; left: 12px; right: 12px; height: 220px;
-            background: rgba(45, 90, 39, 0.7); border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; transition: 0.3s;
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            height: 220px;
+            background: rgba(45, 90, 39, 0.85);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: 0.3s;
         }
-        .gallery-item:hover .overlay { opacity: 1; }
-        .overlay span { color: white; font-weight: bold; border: 2px solid white; padding: 8px 15px; border-radius: 5px; }
+
+        .gallery-item:hover .overlay {
+            opacity: 1;
+        }
+
+        .overlay span {
+            color: white;
+            font-weight: bold;
+            border: 2px solid white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+        }
 
         /* Lightbox Modal */
         .lightbox-modal {
-            display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.95); overflow-y: auto; text-align: center; padding: 50px 0;
-        }
-        /* Collage පෙනුම ලබාදෙන ප්‍රධාන කොටස */
-        .lightbox-content {
-            column-count: 3; /* එක පෙළට පින්තූර 3ක් (Phone එකේදී මෙය 1ක් වේ) */
-            column-gap: 20px;
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 20px;
-        }
-        .lightbox-item {
-            display: inline-block; /* පින්තූර පේළියට කැඩීම වැළැක්වීමට */
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
             width: 100%;
-            margin-bottom: 20px;
-            break-inside: avoid; /* පින්තූරය මැදින් බෙදී යාම වළක්වයි */
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            overflow-y: auto;
+            text-align: center;
+            padding: 80px 10px 50px 10px;
         }
+
+        .lightbox-modal h2 {
+            color: white;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            padding: 0 15px;
+        }
+
+        /* Masonry Collage Layout */
+        .lightbox-content {
+            column-count: 3;
+            column-gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .lightbox-item {
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 15px;
+            break-inside: avoid;
+        }
+
         .lightbox-item img {
             width: 100%;
-            height: auto; /* පින්තූරයේ නියම හැඩය ආරක්ෂා කරයි */
+            height: auto;
             border-radius: 12px;
             display: block;
             cursor: pointer;
             transition: 0.3s transform ease;
             border: 2px solid rgba(255,255,255,0.1);
         }
+
         .lightbox-item img:hover {
             transform: scale(1.03);
             border-color: #a2d2a2;
         }
 
-        /* Phone එක සඳහා ලස්සනට පෙන්වීමට */
+        /* Close Button */
+        .close-lightbox {
+            position: fixed;
+            top: 15px;
+            right: 20px;
+            font-size: clamp(35px, 8vw, 50px);
+            cursor: pointer;
+            color: white;
+            z-index: 2100;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+
+        .close-lightbox:hover {
+            background: #2d5a27;
+            transform: rotate(90deg);
+        }
+
+        /* Loading Message */
+        .loading-message {
+            color: white;
+            font-size: 1.1rem;
+            padding: 40px 20px;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 1rem;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+
+        .empty-message {
+            color: #ccc;
+            font-size: 1rem;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+
+        /* Mobile Optimizations */
         @media (max-width: 768px) {
+            nav {
+                padding: 12px 10px;
+            }
+
+            nav a {
+                margin: 0 8px;
+                font-size: 0.75rem;
+            }
+
+            .container {
+                padding: 30px 15px;
+            }
+
+            h1 {
+                margin-bottom: 30px;
+            }
+
+            .filter-buttons {
+                margin-bottom: 30px;
+                gap: 8px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.85rem;
+            }
+
+            .floor-section {
+                padding: 20px 15px;
+                margin-bottom: 30px;
+                border-radius: 15px;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+                padding-bottom: 12px;
+            }
+
+            .facilities {
+                padding: 12px;
+                font-size: 0.85rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 12px;
+            }
+
+            .gallery-item {
+                padding: 8px;
+            }
+
+            .gallery-item img {
+                height: 150px;
+            }
+
+            .overlay {
+                height: 150px;
+                top: 8px;
+                left: 8px;
+                right: 8px;
+            }
+
+            .overlay span {
+                padding: 8px 15px;
+                font-size: 0.8rem;
+            }
+
+            .lightbox-modal {
+                padding: 70px 10px 40px 10px;
+            }
+
             .lightbox-content {
                 column-count: 2;
+                column-gap: 10px;
+                padding: 0 10px;
+            }
+
+            .lightbox-item {
+                margin-bottom: 10px;
+            }
+
+            .close-lightbox {
+                top: 10px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
             }
         }
 
         @media (max-width: 480px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .gallery-item img {
+                height: 130px;
+            }
+
+            .overlay {
+                height: 130px;
+            }
+
             .lightbox-content {
                 column-count: 1;
             }
+
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
         }
-        .close-lightbox { position: fixed; top: 20px; right: 30px; font-size: 50px; cursor: pointer; color: white; z-index: 2100; }
+
+        /* Tablet view */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .gallery-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Prevent layout shift */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 
@@ -129,7 +452,7 @@
     <nav>
         <a href="index.html">Home</a>
         <a href="gallery.html">Gallery</a>
-        <a href="contact.html">Contact</a> 
+        <a href="contact.html">Contact</a>
     </nav>
 
     <div class="container">
@@ -146,22 +469,34 @@
             <p class="facilities">Facilities: Free Wi-Fi, Hot Water, Full Kitchen, Dining Area, Garden View</p>
             <div class="gallery-grid">
                 <div class="gallery-item" onclick="openFullGallery('ground', 'Bedroom')">
-                    <img src="uploads/gallery/1a10.jpg"> <div class="overlay"><span>View All Photos</span></div> <p>Bedroom</p>
+                    <img src="Gallery/1a10.jpg" alt="Ground Floor Bedroom" loading="lazy">
+                    <div class="overlay"><span>View All Photos</span></div>
+                    <p>Bedroom</p>
                 </div>
                 <div class="gallery-item" onclick="openFullGallery('ground', 'Living Room')">
-                    <img src="uploads/gallery/1b1.jpg"> <div class="overlay"><span>View All Photos</span></div> <p>Living Room</p>
+                    <img src="Gallery/1b1.jpg" alt="Ground Floor Living Room" loading="lazy">
+                    <div class="overlay"><span>View All Photos</span></div>
+                    <p>Living Room</p>
                 </div>
                 <div class="gallery-item" onclick="openFullGallery('ground', 'Kitchen')">
-                    <img src="uploads/gallery/1d1.jpg"> <div class="overlay"><span>View All Photos</span></div> <p>Kitchen</p>
+                    <img src="Gallery/1d1.jpg" alt="Ground Floor Kitchen" loading="lazy">
+                    <div class="overlay"><span>View All Photos</span></div>
+                    <p>Kitchen</p>
                 </div>
                 <div class="gallery-item" onclick="openFullGallery('ground', 'Bathroom')">
-                    <img src="uploads/gallery/1c1.jpg"> <div class="overlay"><span>View All Photos</span></div> <p>Bathroom</p>
+                    <img src="Gallery/1c1.jpg" alt="Ground Floor Bathroom" loading="lazy">
+                    <div class="overlay"><span>View All Photos</span></div>
+                    <p>Bathroom</p>
                 </div>
                 <div class="gallery-item" onclick="openFullGallery('ground', 'Dining Room')">
-                    <img src="uploads/gallery/1e1.jpg"> <div class="overlay"><span>View All Photos</span></div> <p>Dining Room</p>
+                    <img src="Gallery/1e1.jpg" alt="Ground Floor Dining Room" loading="lazy">
+                    <div class="overlay"><span>View All Photos</span></div>
+                    <p>Dining Room</p>
                 </div>
                 <div class="gallery-item" onclick="openFullGallery('ground', 'Outside View')">
-                    <img src="uploads/gallery/1f1.jpg"> <div class="overlay"><span>View All Photos</span></div> <p>Outside View</p>
+                    <img src="Gallery/1f1.jpg" alt="Ground Floor Outside View" loading="lazy">
+                    <div class="overlay"><span>View All Photos</span></div>
+                    <p>Outside View</p>
                 </div>
             </div>
         </div>
@@ -171,91 +506,168 @@
             <p class="facilities">Facilities: Private Balcony, 2 Bedrooms, Kitchenette, Scenic Outside View</p>
             <div class="gallery-grid">
                 <div class="gallery-item" onclick="openFullGallery('first', 'Bedroom No.1')">
-                    <img src="uploads/gallery/2a1.jpg"> <div class="overlay"><span>View All Photos</span></div> <p>Bedroom No.1</p>
+                    <img src="Gallery/2a1.jpg" alt="First Floor Bedroom 1" loading="lazy">
+                    <div class="overlay"><span>View All Photos</span></div>
+                    <p>Bedroom No.1</p>
                 </div>
                 <div class="gallery-item" onclick="openFullGallery('first', 'Bedroom No.2')">
-                    <img src="uploads/gallery/2b1.jpg"> <div class="overlay"><span>View All Photos</span></div> <p>Bedroom No.2</p>
+                    <img src="Gallery/2b1.jpg" alt="First Floor Bedroom 2" loading="lazy">
+                    <div class="overlay"><span>View All Photos</span></div>
+                    <p>Bedroom No.2</p>
                 </div>
                 <div class="gallery-item" onclick="openFullGallery('first', 'Bathroom')">
-                    <img src="uploads/gallery/2c1.jpg"> <div class="overlay"><span>View All Photos</span></div> <p>Bathroom</p>
+                    <img src="Gallery/2c1.jpg" alt="First Floor Bathroom" loading="lazy">
+                    <div class="overlay"><span>View All Photos</span></div>
+                    <p>Bathroom</p>
                 </div>
                 <div class="gallery-item" onclick="openFullGallery('first', 'Living Room')">
-                    <img src="uploads/gallery/2d1.jpg"> <div class="overlay"><span>View All Photos</span></div> <p>Living Room</p>
+                    <img src="Gallery/2d1.jpg" alt="First Floor Living Room" loading="lazy">
+                    <div class="overlay"><span>View All Photos</span></div>
+                    <p>Living Room</p>
                 </div>
                 <div class="gallery-item" onclick="openFullGallery('first', 'Dining Room')">
-                    <img src="uploads/gallery/2e1.jpg"> <div class="overlay"><span>View All Photos</span></div> <p>Dining Room</p>
+                    <img src="Gallery/2e1.jpg" alt="First Floor Dining Room" loading="lazy">
+                    <div class="overlay"><span>View All Photos</span></div>
+                    <p>Dining Room</p>
                 </div>
                 <div class="gallery-item" onclick="openFullGallery('first', 'Kitchenette')">
-                    <img src="uploads/gallery/2f1.jpg"> <div class="overlay"><span>View All Photos</span></div> <p>Kitchenette</p>
+                    <img src="Gallery/2f1.jpg" alt="First Floor Kitchenette" loading="lazy">
+                    <div class="overlay"><span>View All Photos</span></div>
+                    <p>Kitchenette</p>
                 </div>
                 <div class="gallery-item" onclick="openFullGallery('first', 'Outside View')">
-                    <img src="uploads/gallery/2g1.jpg"> <div class="overlay"><span>View All Photos</span></div> <p>Outside View</p>
+                    <img src="Gallery/2g1.jpg" alt="First Floor Outside View" loading="lazy">
+                    <div class="overlay"><span>View All Photos</span></div>
+                    <p>Outside View</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="photoLightbox" class="lightbox-modal">
-        <span class="close-lightbox" onclick="closeLightbox()">&times;</span>
-        <h2 id="lightboxTitle" style="color: white; margin-bottom: 40px; text-transform: uppercase;"></h2>
-        <div class="lightbox-content" id="lightboxImages">
-            </div>
+    <!-- Lightbox Modal -->
+    <div id="photoLightbox" class="lightbox-modal" onclick="handleModalClick(event)">
+        <span class="close-lightbox" onclick="closeLightbox()" aria-label="Close gallery">&times;</span>
+        <h2 id="lightboxTitle"></h2>
+        <div class="lightbox-content" id="lightboxImages"></div>
     </div>
 
     <script>
-        // Floor Filter
+        // Floor Filter Function
         function filterFloor(floor, btn) {
+            // Remove active class from all buttons
             document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            // Add active class to clicked button
             btn.classList.add('active');
+
+            // Get all floor sections
             const sections = document.querySelectorAll('.floor-section');
+            
+            // Hide all sections first
             sections.forEach(s => s.classList.remove('active'));
-            if (floor === 'all') sections.forEach(s => s.classList.add('active'));
-            else document.getElementById(floor).classList.add('active');
+            
+            // Show appropriate section(s)
+            if (floor === 'all') {
+                sections.forEach(s => s.classList.add('active'));
+            } else {
+                const selectedSection = document.getElementById(floor);
+                if (selectedSection) {
+                    selectedSection.classList.add('active');
+                }
+            }
         }
 
         // Open Lightbox and Fetch Photos
         async function openFullGallery(floor, area) {
             const modal = document.getElementById('photoLightbox');
             const container = document.getElementById('lightboxImages');
-            document.getElementById('lightboxTitle').innerText = `${floor} floor - ${area}`;
+            const titleElement = document.getElementById('lightboxTitle');
             
+            // Set title
+            const floorName = floor.charAt(0).toUpperCase() + floor.slice(1);
+            titleElement.innerText = `${floorName} Floor - ${area}`;
+            
+            // Show modal
             modal.style.display = "block";
-            container.innerHTML = "<p style='color:white;'>Fetching latest photos from server...</p>";
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            
+            // Show loading message
+            container.innerHTML = "<p class='loading-message'>Fetching latest photos from server...</p>";
 
             try {
-                // සර්වර් එකෙන් ඒ Floor එකට සහ Area එකට අදාළ පින්තූර ඉල්ලීම
-                const response = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/get-gallery-photos?floor=${floor}&area=${area}`);
+                // Fetch photos from server
+                const response = await fetch(
+                    `https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/get-gallery-photos?floor=${encodeURIComponent(floor)}&area=${encodeURIComponent(area)}`
+                );
+                
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}`);
+                }
+                
                 const photos = await response.json();
 
+                // Clear loading message
                 container.innerHTML = "";
                 
-                if (photos.length === 0) {
-                    container.innerHTML = "<p style='color:#ccc; font-style:italic;'>No extra photos uploaded for this section yet.</p>";
+                // Check if photos exist
+                if (!photos || photos.length === 0) {
+                    container.innerHTML = "<p class='empty-message'>No extra photos uploaded for this section yet.</p>";
                     return;
                 }
 
-                photos.forEach(p => {
-                    container.innerHTML += `
-                        <div class="lightbox-item">
-                            <img src="https://serious-florie-thenaturesedge-d1a60d22.koyeb.app${p.imageUrl}" onclick="window.open(this.src)">
-                        </div>
-                    `;
+                // Display photos in masonry layout
+                photos.forEach(photo => {
+                    const div = document.createElement('div');
+                    div.className = 'lightbox-item';
+                    
+                    const img = document.createElement('img');
+                    img.src = `https://serious-florie-thenaturesedge-d1a60d22.koyeb.app${photo.imageUrl}`;
+                    img.alt = `${area} photo`;
+                    img.loading = 'lazy';
+                    img.onclick = function() {
+                        window.open(this.src, '_blank');
+                    };
+                    
+                    // Handle image load errors
+                    img.onerror = function() {
+                        this.style.display = 'none';
+                        console.error('Failed to load image:', this.src);
+                    };
+                    
+                    div.appendChild(img);
+                    container.appendChild(div);
                 });
+                
             } catch (err) {
-                container.innerHTML = "<p style='color:red;'>Could not connect to server. Ensure your backend is running.</p>";
+                console.error('Error loading gallery photos:', err);
+                container.innerHTML = "<p class='error-message'>Could not connect to server. Please try again later.</p>";
             }
         }
 
+        // Close Lightbox Function
         function closeLightbox() {
-            document.getElementById('photoLightbox').style.display = "none";
+            const modal = document.getElementById('photoLightbox');
+            modal.style.display = "none";
+            document.body.style.overflow = 'auto'; // Restore scrolling
         }
 
-        // Close on Background Click
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('photoLightbox')) closeLightbox();
+        // Handle Modal Background Click
+        function handleModalClick(event) {
+            if (event.target.id === 'photoLightbox') {
+                closeLightbox();
+            }
         }
+
+        // Close on Escape Key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+
+        // Prevent body scroll when modal is open
+        document.getElementById('photoLightbox').addEventListener('scroll', function(e) {
+            e.stopPropagation();
+        });
     </script>
 </body>
-
 </html>
-
