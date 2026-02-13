@@ -6,25 +6,26 @@
     <title>The Nature's Edge Mirissa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        html {
+        * {
             margin: 0;
             padding: 0;
-            height: 100%;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
+        }
+
+        html {
             scroll-behavior: smooth;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            /* පසුබිම් පින්තූරය මුළු පිටුවටම ස්ථාවර (Fixed) කරනවා */
             background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
                         url('146292.jpg') no-repeat center center fixed;
             background-size: cover;
             color: #333;
+            min-height: 100vh;
         }
 
-        /* Transparent Glass Menu */
+        /* Navigation Menu */
         nav {
             position: fixed;
             top: 0;
@@ -33,7 +34,7 @@
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             z-index: 1000;
-            padding: 20px 0;
+            padding: 15px 20px;
             text-align: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
@@ -41,46 +42,51 @@
         nav a {
             color: white;
             text-decoration: none;
-            margin: 0 20px;
+            margin: 0 15px;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
+            font-size: 0.9rem;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
             transition: 0.3s;
         }
 
-        nav a:hover { color: #a2d2a2; }
+        nav a:hover { 
+            color: #a2d2a2; 
+        }
 
-        /* Parallax Hero Section */
+        /* Hero Section */
         .hero-section {
-            height: 100vh; 
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
             color: white;
             text-align: center;
+            padding: 20px;
         }
 
         .hero-section h1 {
-            font-size: 4.5rem;
-            margin: 0;
+            font-size: clamp(2rem, 8vw, 4.5rem);
+            margin: 0 0 15px 0;
             text-shadow: 2px 2px 15px rgba(0,0,0,0.7);
         }
 
         .hero-section p {
-            font-size: 1.5rem;
+            font-size: clamp(1rem, 3vw, 1.5rem);
             text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
+            margin-bottom: 10px;
         }
 
         .book-now-btn {
             background-color: #0094f6;
             color: white;
-            padding: 15px 40px;
+            padding: 15px 35px;
             text-decoration: none;
             border-radius: 30px;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
             transition: 0.3s ease;
             display: inline-block;
             margin-top: 25px;
@@ -93,166 +99,40 @@
             box-shadow: 0 6px 20px rgba(162,210,162,0.4);
         }
 
-        /* Global Content Boxes */
+        /* Content Containers */
+        .container {
+            width: 100%;
+            padding: 0 15px;
+        }
+
         .content {
-            padding: 60px 40px;
+            padding: 40px 20px;
             max-width: 1000px;
-            margin: 60px auto;
+            margin: 40px auto;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            border-radius: 24px;
+            border-radius: 20px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        h2 { 
+            color: #2d5a27; 
+            font-size: clamp(1.5rem, 4vw, 2.2rem); 
+            margin-bottom: 25px;
             text-align: center;
         }
 
-        h2 { color: #2d5a27; font-size: 2.2rem; margin-bottom: 25px; }
-
-        .facilities-icons {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 30px;
-            margin-top: 30px;
-        }
-
-        .facility-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 100px;
-            transition: 0.3s;
-        }
-
-        .facility-item:hover {
-            transform: translateY(-5px);
-        }
-
-        .facility-item i {
-            font-size: 2.5rem;
-            color: #2d5a27; /* Villa එකේ ප්‍රධාන කොළ පාට */
-            margin-bottom: 10px;
-        }
-
-        .facility-item span {
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: #333;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Mobile වලදී ලස්සනට පෙන්වීමට */
-        @media (max-width: 600px) {
-            .facilities-icons {
-                gap: 15px;
-            }
-            .facility-item i {
-                font-size: 1.8rem;
-            }
-        }
-
-        /* --- Professional Reviews Summary Area --- */
-        .reviews-summary {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 30px;
-            padding: 20px;
-            margin-bottom: 40px;
-            align-items: center;
-            border-bottom: 1px solid #eee;
-        }
-
-        .stat-main h1 { font-size: 4.5rem; margin: 0; color: #2d5a27; font-weight: 800; }
-        .stars-avg { color: #ffcc00; font-size: 1.4rem; margin: 10px 0; }
-        
-        .stat-line { 
-            display: grid; 
-            grid-template-columns: 40px 1fr 30px; 
-            align-items: center; 
-            gap: 15px; 
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .bar-bg { background: #e2e8f0; height: 8px; width: 100%; border-radius: 10px; overflow: hidden; }
-        .bar-fill { background: linear-gradient(90deg, #ffcc00, #f6ad55); height: 100%; transition: 1s ease; }
-
-        /* --- Review Slider --- */
-        .slider-wrapper { position: relative; padding: 0 30px; }
-        .review-slider {
-            display: flex;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            gap: 25px;
-            padding: 20px 0;
-            scrollbar-width: none;
-        }
-        .review-slider::-webkit-scrollbar { display: none; }
-
-        .review-card {
-            min-width: calc(50% - 20px);
-            background: #fff;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
-            border: 1px solid #f0f0f0;
-            text-align: left;
-            transition: 0.4s;
-        }
-        .review-card:hover { transform: translateY(-8px); border-color: #a2d2a2; }
-
-        .slider-btn {
-            position: absolute;
-            top: 50%; transform: translateY(-50%);
-            background: white; border: none; width: 45px; height: 45px;
-            border-radius: 50%; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            z-index: 10; font-size: 1.2rem; transition: 0.3s;
-        }
-        .slider-btn:hover { background: #2d5a27; color: white; }
-        .prev { left: -15px; } .next { right: -15px; }
-
-        /* --- Map & Footer --- */
-        .map-container { overflow: hidden; padding-bottom: 50%; position: relative; border-radius: 15px; }
-        .map-container iframe { left: 0; top: 0; height: 100%; width: 100%; position: absolute; }
-
-        .social-icons-container { display: flex; justify-content: center; gap: 20px; margin-top: 30px; flex-wrap: wrap; }
-        .icon-box {
-            display: flex; flex-direction: column; align-items: center;
-            text-decoration: none; color: #333; background: #fff;
-            padding: 15px 25px; border-radius: 15px; min-width: 100px;
-            transition: 0.3s; border: 1px solid #eee;
-        }
-        .icon-box:hover { transform: translateY(-5px); color: white; }
-        .whatsapp:hover { background: #25D366; }
-        .telegram:hover { background: #0088cc; }
-        .phone:hover { background: #2d5a27; }
-        .email:hover { background: #ea4335; }
-
-        footer { padding: 40px; text-align: center; color: white; background: rgba(0,0,0,0.2); }
-
-        @media (max-width: 768px) {
-            .reviews-summary { grid-template-columns: 1fr; }
-            .review-card { min-width: 90%; }
-        }
-
-        /* About Section Container */
+        /* About Section */
         .about-container-modern {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 50px 40px;
-            border-radius: 25px;
-            max-width: 1000px;
-            margin: 40px auto;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            color: #333;
             text-align: center;
         }
 
         .section-title {
             color: #2d5a27;
-            font-size: 2.2rem;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
             margin-bottom: 25px;
             position: relative;
-            padding-bottom: 10px;
+            padding-bottom: 15px;
         }
 
         .section-title::after {
@@ -270,29 +150,34 @@
         .about-description {
             line-height: 1.8;
             color: #555;
-            font-size: 1.05rem;
-            margin-bottom: 40px;
-            text-align: justify;
+            font-size: clamp(0.9rem, 2vw, 1.05rem);
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .about-description p {
+            margin-bottom: 15px;
         }
 
         .about-description strong {
             color: #2d5a27;
         }
 
-        /* Amenities Grid Styling */
+        /* Amenities Grid */
         .amenities-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 20px;
-            justify-content: center;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
         }
 
         .amenity-card {
-            padding: 15px;
+            padding: 20px 10px;
             background: #f8faf8;
             border-radius: 15px;
             transition: 0.3s;
             border: 1px solid #edf2ed;
+            text-align: center;
         }
 
         .amenity-card:hover {
@@ -302,8 +187,8 @@
         }
 
         .amenity-card i {
-            font-size: 1.6rem; /* අයිකන ප්‍රමාණය මඳක් කුඩා කළා */
-            margin-bottom: 8px;
+            font-size: clamp(1.3rem, 3vw, 1.8rem);
+            margin-bottom: 10px;
             display: block;
             color: #2d5a27;
         }
@@ -313,32 +198,330 @@
         }
 
         .amenity-card span {
-            font-size: 0.85rem;
+            font-size: clamp(0.7rem, 1.8vw, 0.9rem);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            display: block;
         }
 
-        /* Mobile Responsive */
-        @media (max-width: 600px) {
-            .about-container-modern {
-                padding: 30px 20px;
-                margin: 20px;
+        /* Reviews Section */
+        .reviews-summary {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .stat-main h1 { 
+            font-size: clamp(3rem, 10vw, 4.5rem); 
+            margin: 0; 
+            color: #2d5a27; 
+            font-weight: 800; 
+        }
+
+        .stars-avg { 
+            color: #ffcc00; 
+            font-size: clamp(1.2rem, 3vw, 1.4rem); 
+            margin: 10px 0; 
+        }
+
+        .stat-main p {
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            color: #666;
+        }
+        
+        .stat-line { 
+            display: grid; 
+            grid-template-columns: 40px 1fr 40px; 
+            align-items: center; 
+            gap: 10px; 
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .bar-bg { 
+            background: #e2e8f0; 
+            height: 8px; 
+            width: 100%; 
+            border-radius: 10px; 
+            overflow: hidden; 
+        }
+
+        .bar-fill { 
+            background: linear-gradient(90deg, #ffcc00, #f6ad55); 
+            height: 100%; 
+            transition: width 1s ease; 
+        }
+
+        /* Review Slider */
+        .slider-wrapper { 
+            position: relative; 
+            padding: 0 50px; 
+        }
+
+        .review-slider {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            gap: 20px;
+            padding: 20px 0;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .review-slider::-webkit-scrollbar { 
+            display: none; 
+        }
+
+        .review-card {
+            min-width: 280px;
+            flex: 0 0 auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+            border: 1px solid #f0f0f0;
+            text-align: left;
+            transition: 0.3s;
+        }
+
+        .review-card:hover { 
+            transform: translateY(-8px); 
+            border-color: #a2d2a2; 
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+        }
+
+        .review-card .stars {
+            color: #ffcc00;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .review-card .comment {
+            font-style: italic;
+            color: #444;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .review-card .author {
+            color: #2d5a27;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .review-card .country {
+            font-size: 0.8rem;
+            color: #888;
+            font-weight: normal;
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%; 
+            transform: translateY(-50%);
+            background: white; 
+            border: none; 
+            width: 40px; 
+            height: 40px;
+            border-radius: 50%; 
+            cursor: pointer; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 10; 
+            font-size: 1.2rem; 
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slider-btn:hover { 
+            background: #2d5a27; 
+            color: white; 
+        }
+
+        .prev { left: 5px; }
+        .next { right: 5px; }
+
+        /* Map Container */
+        .map-container { 
+            overflow: hidden; 
+            padding-bottom: 56.25%; 
+            position: relative; 
+            border-radius: 15px; 
+            height: 0;
+        }
+
+        .map-container iframe { 
+            left: 0; 
+            top: 0; 
+            height: 100%; 
+            width: 100%; 
+            position: absolute; 
+        }
+
+        /* Social Icons */
+        .social-icons-container { 
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .icon-box {
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center;
+            text-decoration: none; 
+            color: #333; 
+            background: #fff;
+            padding: 20px 15px; 
+            border-radius: 15px;
+            transition: 0.3s; 
+            border: 1px solid #eee;
+            text-align: center;
+        }
+
+        .icon-box:hover { 
+            transform: translateY(-5px); 
+            color: white; 
+        }
+
+        .icon-box i {
+            margin-bottom: 8px;
+        }
+
+        .icon-box span {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .whatsapp:hover { background: #25D366; }
+        .telegram:hover { background: #0088cc; }
+        .phone:hover { background: #2d5a27; }
+        .email:hover { background: #ea4335; }
+
+        /* Footer */
+        footer { 
+            padding: 30px 20px; 
+            text-align: center; 
+            color: white; 
+            background: rgba(0,0,0,0.3);
+            font-size: clamp(0.8rem, 2vw, 1rem);
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            nav {
+                padding: 12px 10px;
             }
+
+            nav a {
+                margin: 0 8px;
+                font-size: 0.75rem;
+                letter-spacing: 1px;
+            }
+
+            .content {
+                padding: 30px 15px;
+                margin: 30px 10px;
+                border-radius: 15px;
+            }
+
             .amenities-grid {
                 grid-template-columns: repeat(3, 1fr);
                 gap: 10px;
             }
-            .amenity-card i {
-                font-size: 1.3rem;
+
+            .amenity-card {
+                padding: 15px 8px;
             }
-            .amenity-card span {
-                font-size: 0.7rem;
+
+            .reviews-summary {
+                grid-template-columns: 1fr;
+                padding: 15px;
+                gap: 20px;
+            }
+
+            .slider-wrapper {
+                padding: 0 45px;
+            }
+
+            .review-card {
+                min-width: 250px;
+                padding: 20px;
+            }
+
+            .stat-line {
+                grid-template-columns: 35px 1fr 35px;
+                gap: 8px;
+                font-size: 0.9rem;
+            }
+
+            .social-icons-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .about-description {
+                text-align: justify;
             }
         }
 
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 15px;
+            }
 
+            .book-now-btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
 
+            .amenities-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .slider-wrapper {
+                padding: 0 40px;
+            }
+
+            .slider-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+
+            .review-card {
+                min-width: 220px;
+            }
+        }
+
+        /* Tablet view */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .reviews-summary {
+                grid-template-columns: 1fr 2fr;
+            }
+
+            .review-card {
+                min-width: calc(50% - 20px);
+            }
+        }
+
+        /* Large screens */
+        @media (min-width: 1025px) {
+            .reviews-summary {
+                grid-template-columns: 1fr 2fr;
+            }
+
+            .review-card {
+                min-width: calc(50% - 20px);
+            }
+        }
     </style>
 </head>
 <body>
@@ -413,16 +596,15 @@
                     <div class="stars-avg" id="avgStars">⭐⭐⭐⭐⭐</div>
                     <p id="totalReviewCount">Loading Reviews...</p>
                 </div>
-                <div class="stat-bars" id="statBars">
-                    </div>
+                <div class="stat-bars" id="statBars"></div>
             </div>
 
             <div class="slider-wrapper">
-                <button class="slider-btn prev" onclick="moveSlider(-1)">❮</button>
+                <button class="slider-btn prev" onclick="moveSlider(-1)" aria-label="Previous review">❮</button>
                 <div class="review-slider" id="reviewsList">
                     <p>Fetching latest verified reviews...</p>
                 </div>
-                <button class="slider-btn next" onclick="moveSlider(1)">❯</button>
+                <button class="slider-btn next" onclick="moveSlider(1)" aria-label="Next review">❯</button>
             </div>
         </div>
 
@@ -430,25 +612,29 @@
             <h2>Explore Mirissa</h2>
             <div class="map-container">
                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3968.379861850179!2d80.471271!3d5.9422717!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae13f0b2abfc8b1%3A0x53fe512ba357f6e6!2sThe%20Nature%E2%80%99s%20Edge%20Mirissa!5e0!3m2!1sen!2ssg!4v1770717301041!5m2!1sen!2ssg" 
-                style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                style="border:0;" allowfullscreen="" loading="lazy" title="Location Map"></iframe>
             </div>
         </div>
 
         <div class="content">
             <h2>Connect With Us</h2>
-            <p>Ready to plan your escape? Reach out to us anytime.</p>
+            <p style="text-align: center; margin-bottom: 20px;">Ready to plan your escape? Reach out to us anytime.</p>
             <div class="social-icons-container">
-                <a href="https://wa.me/94717526757" target="_blank" class="icon-box whatsapp">
-                    <i class="fab fa-whatsapp fa-2x"></i><br><span>WhatsApp</span>
+                <a href="https://wa.me/94717526757" target="_blank" rel="noopener" class="icon-box whatsapp">
+                    <i class="fab fa-whatsapp fa-2x"></i>
+                    <span>WhatsApp</span>
                 </a>
-                <a href="https://t.me/+94717526757" target="_blank" class="icon-box telegram">
-                    <i class="fab fa-telegram-plane fa-2x"></i><br><span>Telegram</span>
+                <a href="https://t.me/+94717526757" target="_blank" rel="noopener" class="icon-box telegram">
+                    <i class="fab fa-telegram-plane fa-2x"></i>
+                    <span>Telegram</span>
                 </a>
                 <a href="tel:0717526757" class="icon-box phone">
-                    <i class="fas fa-phone-alt fa-2x"></i><br><span>Call Us</span>
+                    <i class="fas fa-phone-alt fa-2x"></i>
+                    <span>Call Us</span>
                 </a>
                 <a href="mailto:tharushajayod1@gmail.com" class="icon-box email">
-                    <i class="fas fa-envelope fa-2x"></i><br><span>Email</span>
+                    <i class="fas fa-envelope fa-2x"></i>
+                    <span>Email</span>
                 </a>
             </div>
         </div>
@@ -465,14 +651,15 @@
                 const reviews = await response.json();
                 const container = document.getElementById('reviewsList');
                 
-                if (reviews.length === 0) {
-                    container.innerHTML = "<p>No reviews yet. Be the first to share your stay!</p>";
+                if (!reviews || reviews.length === 0) {
+                    container.innerHTML = "<p style='padding: 20px; text-align: center;'>No reviews yet. Be the first to share your stay!</p>";
                     return;
                 }
 
                 // Statistics Calculation
                 let totalRating = 0;
                 let starCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+                
                 reviews.forEach(r => {
                     totalRating += r.rating;
                     starCounts[r.rating]++;
@@ -480,43 +667,60 @@
 
                 const avg = (totalRating / reviews.length).toFixed(1);
                 document.getElementById('totalAvgRating').innerText = avg;
-                document.getElementById('totalReviewCount').innerText = `${reviews.length} Verified Reviews`;
+                document.getElementById('totalReviewCount').innerText = `${reviews.length} Verified Review${reviews.length !== 1 ? 's' : ''}`;
                 document.getElementById('avgStars').innerHTML = "⭐".repeat(Math.round(avg));
 
                 // Draw Progress Bars
                 let barHTML = "";
                 for (let i = 5; i >= 1; i--) {
-                    const percentage = (starCounts[i] / reviews.length) * 100;
+                    const count = starCounts[i] || 0;
+                    const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
                     barHTML += `
                         <div class="stat-line">
                             <span>${i}★</span>
-                            <div class="bar-bg"><div class="bar-fill" style="width: ${percentage}%"></div></div>
-                            <span>${starCounts[i]}</span>
+                            <div class="bar-bg">
+                                <div class="bar-fill" style="width: ${percentage}%"></div>
+                            </div>
+                            <span>${count}</span>
                         </div>`;
                 }
                 document.getElementById('statBars').innerHTML = barHTML;
 
-                // Load Cards
+                // Load Review Cards
                 container.innerHTML = "";
                 reviews.forEach(r => {
                     const stars = "⭐".repeat(r.rating);
-                    container.innerHTML += `
-                        <div class="review-card">
-                            <div style="color: #ffcc00; margin-bottom: 12px;">${stars}</div>
-                            <p style="font-style: italic; color: #444; margin-bottom: 20px;">"${r.comment}"</p>
-                            <h4 style="color: #2d5a27; margin: 0;">${r.username} <span style="font-size: 0.8rem; color: #888; font-weight: normal;">• ${r.country || 'Verified Guest'}</span></h4>
-                        </div>`;
+                    const card = document.createElement('div');
+                    card.className = 'review-card';
+                    card.innerHTML = `
+                        <div class="stars">${stars}</div>
+                        <p class="comment">"${r.comment}"</p>
+                        <h4 class="author">${r.username} <span class="country">• ${r.country || 'Verified Guest'}</span></h4>
+                    `;
+                    container.appendChild(card);
                 });
-            } catch (err) { console.error(err); }
+            } catch (err) { 
+                console.error('Error loading reviews:', err);
+                document.getElementById('reviewsList').innerHTML = "<p style='padding: 20px; text-align: center;'>Unable to load reviews at this time.</p>";
+            }
         }
 
         function moveSlider(direction) {
             const slider = document.getElementById('reviewsList');
-            const scrollAmount = slider.offsetWidth / 2;
-            slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+            const cardWidth = slider.querySelector('.review-card')?.offsetWidth || 280;
+            const scrollAmount = cardWidth + 20; // card width + gap
+            slider.scrollBy({ 
+                left: direction * scrollAmount, 
+                behavior: 'smooth' 
+            });
         }
 
-        window.onload = loadReviews;
+        // Load reviews when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadReviews);
+        } else {
+            loadReviews();
+        }
     </script>
 </body>
 </html>
