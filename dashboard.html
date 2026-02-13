@@ -17,86 +17,474 @@
             --gold: #ffcc00;
         }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url('146292.jpg') no-repeat center center fixed;
-            background-size: cover; margin: 0; color: #333;
+            background-size: cover;
+            color: #333;
+            min-height: 100vh;
         }
 
         .navbar {
-            background-color: var(--dark-blue); padding: 15px 5%;
-            display: flex; justify-content: space-between; align-items: center;
-            color: white; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            background-color: var(--dark-blue);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        .navbar h2 a { color: white; text-decoration: none; transition: 0.3s; }
-        .navbar h2 a:hover { color: #a2d2a2; }
+        .navbar h2 {
+            margin: 0;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+        }
 
-        .main-container { max-width: 1000px; margin: 30px auto; padding: 20px; }
+        .navbar h2 a {
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .navbar h2 a:hover {
+            color: #a2d2a2;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        #welcomeUser {
+            font-weight: bold;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            display: none;
+        }
+
+        #navProfileCircle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid white;
+            overflow: hidden;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        #navUserImg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        #navDefaultIcon {
+            color: #555;
+            font-size: 20px;
+        }
+
+        .logout-btn {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .logout-btn:hover {
+            background: #e63939;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 15px;
+        }
 
         .booking-card {
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
-            padding: 35px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: clamp(20px, 5vw, 35px);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
             margin-bottom: 30px;
         }
 
-        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .full-width { grid-column: span 2; }
+        .booking-card h2 {
+            color: var(--primary-blue);
+            margin-top: 0;
+            text-align: center;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 25px;
+        }
 
-        label { display: block; font-weight: bold; margin-bottom: 8px; color: var(--dark-blue); }
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            #welcomeUser {
+                display: inline;
+            }
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--dark-blue);
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
 
         input, select, textarea {
-            width: 100%; padding: 14px; border: 1px solid #ddd;
-            border-radius: 12px; box-sizing: border-box; font-size: 16px;
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
         }
 
         .price-display {
             background: linear-gradient(135deg, #003366 0%, #0056b3 100%);
-            padding: 25px; border-radius: 15px; text-align: center;
-            margin: 25px 0; color: white; box-shadow: 0 8px 20px rgba(0, 86, 179, 0.3);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 25px 0;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0, 86, 179, 0.3);
         }
 
-        .price-value { font-size: 28px; color: var(--gold); font-weight: 800; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .price-display h3 {
+            margin: 0 0 15px 0;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+        }
+
+        .price-value {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            color: var(--gold);
+            font-weight: 800;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
 
         .section-header {
-            color: var(--dark-blue); margin-top:0; margin-bottom:20px; 
-            border-bottom: 2px solid #ddd; padding-bottom: 10px;
-            display: flex; align-items: center; gap: 10px;
+            color: var(--dark-blue);
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
         }
 
-        .bookings-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; border-radius: 10px; overflow: hidden; }
-        .bookings-table th, .bookings-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
-        .bookings-table th { background: var(--light-blue); color: var(--dark-blue); font-size: 0.9rem; }
-        
+        .guest-info-section {
+            background: #f8fafc;
+            padding: clamp(15px, 4vw, 25px);
+            border-radius: 15px;
+            border: 1px solid #edf2f7;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 15px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .bookings-table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .bookings-table th,
+        .bookings-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+        }
+
+        .bookings-table th {
+            background: var(--light-blue);
+            color: var(--dark-blue);
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .bookings-table td {
+            word-wrap: break-word;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .status-active {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-cancelled {
+            background: #ff4d4d;
+            color: white;
+        }
+
+        .action-btn {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .action-btn:hover {
+            background: #e63939;
+            transform: translateY(-2px);
+        }
+
         .confirm-btn {
             background: linear-gradient(to right, #28a745, #218838);
-            color: white; border: none; padding: 20px; width: 100%;
-            border-radius: 12px; font-size: 20px; font-weight: bold;
-            cursor: pointer; transition: 0.3s ease; margin-top: 25px;
+            color: white;
+            border: none;
+            padding: clamp(15px, 3vw, 20px);
+            width: 100%;
+            border-radius: 12px;
+            font-size: clamp(1rem, 3vw, 1.25rem);
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s ease;
+            margin-top: 25px;
         }
-        .confirm-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4); }
 
-        /* --- Global Professional Popup Styles --- */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
-            z-index: 9999; justify-content: center; align-items: center;
+        .confirm-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
         }
+
+        .confirm-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
         .modal-content {
-            background: white; padding: 35px; border-radius: 25px; width: 90%; max-width: 420px;
-            text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            background: white;
+            padding: clamp(25px, 5vw, 35px);
+            border-radius: 25px;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
             animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        @keyframes popIn { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-icon { font-size: 60px; margin-bottom: 20px; }
-        .success-icon { color: var(--green); }
-        .error-icon { color: #d9534f; }
-        .info-icon { color: var(--primary-blue); }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            font-size: clamp(45px, 10vw, 60px);
+            margin-bottom: 20px;
+        }
+
+        .success-icon {
+            color: var(--green);
+        }
+
+        .error-icon {
+            color: #d9534f;
+        }
+
+        .info-icon {
+            color: var(--primary-blue);
+        }
+
+        .modal-content h2 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+        }
+
+        .modal-content p {
+            color: #666;
+            margin: 10px 0;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
         .modal-btn {
-            background: var(--dark-blue); color: white; border: none; padding: 12px 30px;
-            border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px;
-            transition: 0.3s; width: 100%; font-size: 16px;
+            background: var(--dark-blue);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+            width: 100%;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .modal-btn:hover {
+            background: var(--primary-blue);
+            transform: translateY(-2px);
+        }
+
+        .modal-btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-btn-group .modal-btn {
+            margin-top: 0;
+            flex: 1;
+        }
+
+        .modal-btn.secondary {
+            background: #6c757d;
+        }
+
+        .modal-btn.danger {
+            background: #d9534f;
+        }
+
+        #cancelReasonInput {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 767px) {
+            .navbar {
+                padding: 10px 3%;
+            }
+
+            .main-container {
+                padding: 10px;
+                margin: 20px auto;
+            }
+
+            .booking-card {
+                padding: 20px 15px;
+                margin-bottom: 20px;
+            }
+
+            .nav-right {
+                gap: 10px;
+            }
+
+            .logout-btn {
+                padding: 8px 15px;
+            }
+
+            .bookings-table th,
+            .bookings-table td {
+                padding: 8px 10px;
+            }
+        }
+
+        /* Tablet adjustments */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .main-container {
+                padding: 20px;
+            }
+        }
+
+        /* Loading state */
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
         }
     </style>
 </head>
@@ -104,21 +492,22 @@
 
     <nav class="navbar">
         <h2><a href="index.html">The Nature's Edge Mirissa</a></h2>
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <span id="welcomeUser" style="font-weight: bold;">Welcome, Guest!</span>
+        <div class="nav-right">
+            <span id="welcomeUser">Welcome, Guest!</span>
             <a href="profile.html" style="text-decoration: none;">
-                <div id="navProfileCircle" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; overflow: hidden; background: #eee; display: flex; align-items: center; justify-content: center; cursor: pointer;">
-                    <img id="navUserImg" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
-                    <i id="navDefaultIcon" class="fas fa-user" style="color: #555; font-size: 20px;"></i>
+                <div id="navProfileCircle">
+                    <img id="navUserImg" src="" alt="Profile">
+                    <i id="navDefaultIcon" class="fas fa-user"></i>
                 </div>
             </a>
-            <button style="background:#ff4d4d; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold;" onclick="logout()">Logout</button>
+            <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
     </nav>
 
     <div class="main-container">
+        <!-- Booking Form -->
         <div class="booking-card">
-            <h2 style="color: var(--primary-blue); margin-top:0; text-align:center;"><i class="fas fa-plus-circle"></i> Plan Your Perfect Stay</h2>
+            <h2><i class="fas fa-plus-circle"></i> Plan Your Perfect Stay</h2>
             <div class="grid-container">
                 <div class="input-group">
                     <label>Villa Option</label>
@@ -143,12 +532,21 @@
                 <div class="price-value" id="totalPrice">Select Dates</div>
             </div>
 
-            <div style="background: #f8fafc; padding: 25px; border-radius: 15px; border: 1px solid #edf2f7;">
-                <h3 class="section-header">Guest Information</h3>
+            <div class="guest-info-section">
+                <h3 class="section-header"><i class="fas fa-user-circle"></i> Guest Information</h3>
                 <div class="grid-container">
-                    <div class="input-group"><label>Full Name</label><input type="text" id="fullName"></div>
-                    <div class="input-group"><label>Email Address</label><input type="email" id="email" readonly></div>
-                    <div class="input-group"><label>Phone Number</label><input type="text" id="phone" placeholder="+1 (555) 000-000"></div>
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" id="fullName" placeholder="Enter your full name">
+                    </div>
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="email" readonly>
+                    </div>
+                    <div class="input-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="phone" placeholder="+1 (555) 000-0000">
+                    </div>
                     <div class="input-group">
                         <label>Your Country</label>
                         <select id="guestCountry">
@@ -170,15 +568,21 @@
                             <option value="Other">Other</option>
                         </select>
                     </div>
-                    <div class="input-group full-width"><label>Special Request</label><textarea id="specialRequest" rows="1"></textarea></div>
+                    <div class="input-group full-width">
+                        <label>Special Request (Optional)</label>
+                        <textarea id="specialRequest" placeholder="Any special requirements or requests..."></textarea>
+                    </div>
                 </div>
             </div>
-            <button class="confirm-btn" onclick="submitBooking()">CONFIRM & RESERVE NOW</button>
+            <button class="confirm-btn" onclick="submitBooking()">
+                <i class="fas fa-check-circle"></i> CONFIRM & RESERVE NOW
+            </button>
         </div>
 
+        <!-- Existing Reservations -->
         <div class="booking-card">
             <h3 class="section-header"><i class="fas fa-list-ul"></i> My Existing Reservations</h3>
-            <div style="overflow-x: auto;">
+            <div class="table-container">
                 <table class="bookings-table">
                     <thead>
                         <tr>
@@ -191,12 +595,13 @@
                         </tr>
                     </thead>
                     <tbody id="userBookingsList">
-                        <tr><td colspan="6" style="text-align:center;">Loading your bookings...</td></tr>
+                        <tr><td colspan="6" class="loading">Loading your bookings...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
+        <!-- Review Section -->
         <div class="booking-card">
             <h3 class="section-header"><i class="fas fa-star"></i> Rate Your Experience</h3>
             <div class="grid-container">
@@ -235,31 +640,35 @@
                 
                 <div class="input-group full-width">
                     <label>Your Review</label>
-                    <textarea id="revComment" rows="2" placeholder="Tell us about your stay..."></textarea>
+                    <textarea id="revComment" placeholder="Tell us about your stay..."></textarea>
                 </div>
             </div>
-            <button class="confirm-btn" style="background: var(--primary-blue); margin-top:15px; padding:15px;" onclick="submitReview()">SUBMIT REVIEW</button>
+            <button class="confirm-btn" style="background: linear-gradient(to right, var(--primary-blue), #003d82);" onclick="submitReview()">
+                <i class="fas fa-paper-plane"></i> SUBMIT REVIEW
+            </button>
         </div>
     </div>
 
+    <!-- Global Modal -->
     <div id="globalModal" class="modal-overlay">
         <div class="modal-content">
             <div id="globalIcon" class="modal-icon"></div>
-            <h2 id="globalTitle" style="margin: 0; color: #333;"></h2>
-            <p id="globalText" style="color: #666; margin-top: 10px; font-size: 16px;"></p>
+            <h2 id="globalTitle"></h2>
+            <p id="globalText"></p>
             <button class="modal-btn" onclick="closeGlobalModal()">OK</button>
         </div>
     </div>
 
+    <!-- Cancel Booking Modal -->
     <div id="cancelModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-icon error-icon"><i class="fas fa-exclamation-triangle"></i></div>
             <h2 style="color: #d9534f;">Cancel Reservation?</h2>
             <p>Please provide a reason for cancellation:</p>
-            <textarea id="cancelReasonInput" placeholder="Reason for cancellation..." style="height: 80px; margin-bottom: 15px;"></textarea>
-            <div style="display: flex; gap: 10px;">
-                <button class="modal-btn" style="background: #6c757d;" onclick="closeCancelModal()">BACK</button>
-                <button class="modal-btn" style="background: #d9534f;" onclick="submitCancellation()">CANCEL NOW</button>
+            <textarea id="cancelReasonInput" placeholder="Reason for cancellation..."></textarea>
+            <div class="modal-btn-group">
+                <button class="modal-btn secondary" onclick="closeCancelModal()">BACK</button>
+                <button class="modal-btn danger" onclick="submitCancellation()">CANCEL BOOKING</button>
             </div>
         </div>
     </div>
@@ -272,15 +681,26 @@
         let bookingIdToCancel = null;
 
         window.onload = async function() {
-            fp = flatpickr("#datePicker", { mode: "range", minDate: "today", dateFormat: "Y-m-d", onChange: calculatePrice });
+            // Initialize date picker
+            fp = flatpickr("#datePicker", {
+                mode: "range",
+                minDate: "today",
+                dateFormat: "Y-m-d",
+                onChange: calculatePrice
+            });
+
+            // Check user authentication
             const user = JSON.parse(localStorage.getItem('user'));
-            if(user) {
+            if (user) {
                 document.getElementById('welcomeUser').innerText = `Welcome, ${user.username}!`;
                 document.getElementById('fullName').value = user.username;
                 document.getElementById('email').value = user.email;
                 loadProfilePic(user.email);
                 await fetchUserBookings(user.email);
-            } else { window.location.href = 'login.html'; }
+            } else {
+                window.location.href = 'login.html';
+            }
+
             await loadPricesFromServer();
             await fetchBookedDates();
         };
@@ -289,16 +709,28 @@
             const icon = document.getElementById('globalIcon');
             document.getElementById('globalTitle').innerText = title;
             document.getElementById('globalText').innerText = text;
-            icon.innerHTML = type === 'success' ? '<i class="fas fa-check-circle"></i>' : (type === 'error' ? '<i class="fas fa-times-circle"></i>' : '<i class="fas fa-info-circle"></i>');
-            icon.className = `modal-icon ${type}-icon`;
+            
+            if (type === 'success') {
+                icon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                icon.className = 'modal-icon success-icon';
+            } else if (type === 'error') {
+                icon.innerHTML = '<i class="fas fa-times-circle"></i>';
+                icon.className = 'modal-icon error-icon';
+            } else {
+                icon.innerHTML = '<i class="fas fa-info-circle"></i>';
+                icon.className = 'modal-icon info-icon';
+            }
+            
             document.getElementById('globalModal').style.display = 'flex';
         }
 
-        function closeGlobalModal() { document.getElementById('globalModal').style.display = 'none'; }
+        function closeGlobalModal() {
+            document.getElementById('globalModal').style.display = 'none';
+        }
 
         async function loadProfilePic(email) {
             try {
-                const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/get-user-details?email=${email}`);
+                const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/get-user-details?email=${email}`);
                 const data = await res.json();
                 if (res.ok && data.profilePic) {
                     const img = document.getElementById('navUserImg');
@@ -306,41 +738,60 @@
                     img.style.display = "block";
                     document.getElementById('navDefaultIcon').style.display = "none";
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.error('Error loading profile picture:', e);
+            }
         }
 
         async function fetchBookedDates() {
             try {
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/get-booked-dates');
+                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/get-booked-dates');
                 allBookingsData = await res.json();
                 updateCalendarRestrictions();
-            } catch (err) {}
+            } catch (err) {
+                console.error('Error fetching booked dates:', err);
+            }
         }
 
         function updateCalendarRestrictions() {
             const selectedType = document.getElementById('roomType').value;
             const guestDropdown = document.getElementById('guestCount');
+            
+            // Set max guests based on room type
             let maxGuests = (selectedType === 'Full Villa') ? 6 : (selectedType === '1st Floor' ? 4 : 2);
+            
             guestDropdown.innerHTML = "";
             for (let i = 1; i <= maxGuests; i++) {
                 let opt = document.createElement("option");
-                opt.value = i; opt.text = i + (i === 1 ? " Person" : " Persons");
+                opt.value = i;
+                opt.text = i + (i === 1 ? " Person" : " Persons");
                 guestDropdown.appendChild(opt);
             }
+            
+            // Disable booked dates
             let datesToDisable = allBookingsData
                 .filter(b => b.roomType === selectedType || selectedType === 'Full Villa' || b.roomType === 'Full Villa')
-                .map(b => ({ from: b.checkIn.split('T')[0], to: b.checkOut.split('T')[0] }));
+                .map(b => ({
+                    from: b.checkIn.split('T')[0],
+                    to: b.checkOut.split('T')[0]
+                }));
+            
             fp.set("disable", datesToDisable);
             fp.clear();
             calculatePrice();
         }
 
         async function loadPricesFromServer() {
-            const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/get-prices');
-            currentPrices = await res.json();
-            document.querySelector('#roomType option[value="1st Floor"]').innerText = `1st Floor Only ($${currentPrices['1st Floor']}/night)`;
-            document.querySelector('#roomType option[value="Ground Floor"]').innerText = `Ground Floor Only ($${currentPrices['Ground Floor']}/night)`;
-            document.querySelector('#roomType option[value="Full Villa"]').innerText = `Entire Villa ($${currentPrices['Full Villa']}/night)`;
+            try {
+                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/get-prices');
+                currentPrices = await res.json();
+                
+                document.querySelector('#roomType option[value="1st Floor"]').innerText = `1st Floor Only ($${currentPrices['1st Floor']}/night)`;
+                document.querySelector('#roomType option[value="Ground Floor"]').innerText = `Ground Floor Only ($${currentPrices['Ground Floor']}/night)`;
+                document.querySelector('#roomType option[value="Full Villa"]').innerText = `Entire Villa ($${currentPrices['Full Villa']}/night)`;
+            } catch (err) {
+                console.error('Error loading prices:', err);
+            }
         }
 
         function calculatePrice() {
@@ -348,39 +799,79 @@
             if (fp.selectedDates.length === 2) {
                 const diffDays = Math.ceil(Math.abs(fp.selectedDates[1] - fp.selectedDates[0]) / (1000 * 60 * 60 * 24));
                 const total = diffDays * Number(currentPrices[room]);
-                document.getElementById('totalPrice').innerText = `$ ${total.toLocaleString()} USD (${diffDays} Nights)`;
-            } else { document.getElementById('totalPrice').innerText = "Select Dates"; }
+                document.getElementById('totalPrice').innerText = `$ ${total.toLocaleString()} USD (${diffDays} Night${diffDays > 1 ? 's' : ''})`;
+            } else {
+                document.getElementById('totalPrice').innerText = "Select Dates";
+            }
         }
 
         async function fetchUserBookings(email) {
-            const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/user-bookings?email=${email}`);
-            const bookings = await res.json();
-            const list = document.getElementById('userBookingsList');
-            list.innerHTML = bookings.length ? "" : "<tr><td colspan='6' style='text-align:center;'>No bookings found.</td></tr>";
-            bookings.forEach(b => {
-                const isCancelled = b.status === 'Cancelled';
-                list.innerHTML += `
-                    <tr>
-                        <td><strong>${b.roomType}</strong></td>
-                        <td>${new Date(b.checkIn).toLocaleDateString()} - ${new Date(b.checkOut).toLocaleDateString()}</td>
-                        <td>$${(b.totalPrice || 0).toLocaleString()}</td>
-                        <td><small>${new Date(b.bookedAt).toLocaleString()}</small></td>
-                        <td><span style="background:${isCancelled?'#ff4d4d':'#28a745'}; color:white; padding:4px 10px; border-radius:15px; font-size:12px;">${b.status}</span></td>
-                        <td>${!isCancelled ? `<button onclick="openCancelModal('${b._id}')" style="background:#ff4d4d; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">Cancel</button>` : '<small>Cancelled</small>'}</td>
-                    </tr>`;
-            });
+            try {
+                const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/user-bookings?email=${email}`);
+                const bookings = await res.json();
+                const list = document.getElementById('userBookingsList');
+                
+                if (bookings.length === 0) {
+                    list.innerHTML = "<tr><td colspan='6' style='text-align:center;'>No bookings found.</td></tr>";
+                    return;
+                }
+                
+                list.innerHTML = "";
+                bookings.forEach(b => {
+                    const isCancelled = b.status === 'Cancelled';
+                    const statusClass = isCancelled ? 'status-cancelled' : 'status-active';
+                    
+                    list.innerHTML += `
+                        <tr>
+                            <td><strong>${b.roomType}</strong></td>
+                            <td>${new Date(b.checkIn).toLocaleDateString()} - ${new Date(b.checkOut).toLocaleDateString()}</td>
+                            <td>$${(b.totalPrice || 0).toLocaleString()}</td>
+                            <td><small>${new Date(b.bookedAt).toLocaleString()}</small></td>
+                            <td><span class="status-badge ${statusClass}">${b.status}</span></td>
+                            <td>
+                                ${!isCancelled ? 
+                                    `<button class="action-btn" onclick="openCancelModal('${b._id}')">Cancel</button>` : 
+                                    '<small style="color: #999;">Cancelled</small>'
+                                }
+                            </td>
+                        </tr>`;
+                });
+            } catch (err) {
+                console.error('Error fetching bookings:', err);
+                document.getElementById('userBookingsList').innerHTML = 
+                    "<tr><td colspan='6' style='text-align:center; color: #d9534f;'>Error loading bookings. Please refresh.</td></tr>";
+            }
         }
 
         async function submitBooking() {
-            if (fp.selectedDates.length < 2) return showPopup("Wait!", "Please select Stay Dates!", "info");
-            if (!document.getElementById('fullName').value || !document.getElementById('phone').value || !document.getElementById('guestCountry').value) return showPopup("Error", "Please fill required guest information!", "error");
+            // Validation
+            if (fp.selectedDates.length < 2) {
+                return showPopup("Wait!", "Please select your stay dates!", "info");
+            }
+            
+            if (!document.getElementById('fullName').value.trim()) {
+                return showPopup("Error", "Please enter your full name!", "error");
+            }
+            
+            if (!document.getElementById('phone').value.trim()) {
+                return showPopup("Error", "Please enter your phone number!", "error");
+            }
+            
+            if (!document.getElementById('guestCountry').value) {
+                return showPopup("Error", "Please select your country!", "error");
+            }
+
+            const totalPriceText = document.getElementById('totalPrice').innerText;
+            const priceMatch = totalPriceText.match(/\d+/g);
+            const totalPrice = priceMatch ? Number(priceMatch.join('')) : 0;
 
             const bookingData = {
-                checkIn: fp.selectedDates[0], checkOut: fp.selectedDates[1],
+                checkIn: fp.selectedDates[0],
+                checkOut: fp.selectedDates[1],
                 roomType: document.getElementById('roomType').value,
                 guests: document.getElementById('guestCount').value,
                 email: document.getElementById('email').value,
-                totalPrice: Number(document.getElementById('totalPrice').innerText.split(' ')[1].replace(/,/g, '')),
+                totalPrice: totalPrice,
                 guestDetails: {
                     fullName: document.getElementById('fullName').value,
                     phone: document.getElementById('phone').value,
@@ -390,51 +881,103 @@
             };
 
             try {
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/add-booking', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/add-booking', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(bookingData)
                 });
+                
                 if (res.ok) {
-                    showPopup("Success!", "Booking confirmed! Redirecting...", "success");
+                    showPopup("Success!", "Booking confirmed! Redirecting to invoice...", "success");
                     localStorage.setItem('lastBooking', JSON.stringify(bookingData));
                     setTimeout(() => window.location.href = 'invoice.html', 2500);
-                } else { showPopup("Failed", "Booking error occurred.", "error"); }
-            } catch (e) { showPopup("Error", "Server error!", "error"); }
+                } else {
+                    showPopup("Failed", "Booking could not be completed. Please try again.", "error");
+                }
+            } catch (e) {
+                console.error('Booking error:', e);
+                showPopup("Error", "Server error! Please try again later.", "error");
+            }
         }
 
-        function openCancelModal(id) { bookingIdToCancel = id; document.getElementById('cancelModal').style.display = 'flex'; }
-        function closeCancelModal() { document.getElementById('cancelModal').style.display = 'none'; }
+        function openCancelModal(id) {
+            bookingIdToCancel = id;
+            document.getElementById('cancelReasonInput').value = '';
+            document.getElementById('cancelModal').style.display = 'flex';
+        }
+
+        function closeCancelModal() {
+            document.getElementById('cancelModal').style.display = 'none';
+            bookingIdToCancel = null;
+        }
+
         async function submitCancellation() {
-            const reason = document.getElementById('cancelReasonInput').value;
-            if (!reason.trim()) return showPopup("Wait", "Please provide a reason!", "info");
+            const reason = document.getElementById('cancelReasonInput').value.trim();
+            
+            if (!reason) {
+                return showPopup("Wait", "Please provide a reason for cancellation!", "info");
+            }
+            
             try {
-                const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/cancel-booking/${bookingIdToCancel}`, {
-                    method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/cancel-booking/${bookingIdToCancel}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ reason })
                 });
+                
                 if (res.ok) {
                     closeCancelModal();
-                    showPopup("Cancelled", "Booking has been cancelled.", "success");
+                    showPopup("Cancelled", "Your booking has been cancelled successfully.", "success");
                     setTimeout(() => location.reload(), 2000);
+                } else {
+                    showPopup("Error", "Cancellation failed. Please try again.", "error");
                 }
-            } catch (e) { showPopup("Error", "Cancellation failed.", "error"); }
+            } catch (e) {
+                console.error('Cancellation error:', e);
+                showPopup("Error", "Server error during cancellation.", "error");
+            }
         }
 
         async function submitReview() {
             const country = document.getElementById('revCountry').value;
-            const comment = document.getElementById('revComment').value;
-            if (!country || !comment) return showPopup("Wait", "Please select country and write a review!", "info");
+            const comment = document.getElementById('revComment').value.trim();
+            
+            if (!country) {
+                return showPopup("Wait", "Please select your country!", "info");
+            }
+            
+            if (!comment) {
+                return showPopup("Wait", "Please write your review!", "info");
+            }
+            
             try {
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/add-review', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: localStorage.getItem('token'), rating: document.getElementById('revRating').value, country, comment })
+                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/add-review', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token: localStorage.getItem('token'),
+                        rating: document.getElementById('revRating').value,
+                        country: country,
+                        comment: comment
+                    })
                 });
-                if (res.ok) { showPopup("Thank You!", "Review submitted!", "success"); setTimeout(() => location.reload(), 1500); }
-            } catch (e) { showPopup("Error", "Failed to submit review.", "error"); }
+                
+                if (res.ok) {
+                    showPopup("Thank You!", "Your review has been submitted successfully!", "success");
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showPopup("Error", "Failed to submit review. Please try again.", "error");
+                }
+            } catch (e) {
+                console.error('Review error:', e);
+                showPopup("Error", "Server error! Please try again later.", "error");
+            }
         }
 
-        function logout() { localStorage.clear(); window.location.href = 'login.html'; }
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
     </script>
 </body>
-
 </html>
