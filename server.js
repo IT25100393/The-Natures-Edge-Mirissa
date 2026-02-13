@@ -1,773 +1,577 @@
-// ===========================================
-// THE NATURE'S EDGE MIRISSA - BACKEND SERVER
-// ===========================================
+require('dotenv').config(); // මේක තමයි මුලින්ම තියෙන්න ඕනේ
 
-// Required Packages
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const twilio = require('twilio');
+const nodemailer = require('nodemailer');
 
-// Initialize Express App
 const app = express();
-const PORT = process.env.PORT || 3000; 
 
-// Twilio Configuration
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN; 
-const client = new twilio(accountSid, authToken);
-
-// ===========================================
-// MIDDLEWARE SETUP
-// ===========================================
-app.use(cors()); 
+// Middleware
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 app.use('/uploads', express.static('uploads'));
-app.use(express.static(path.join(__dirname)));
 
-// ===========================================
-// DATABASE CONNECTION
-// ===========================================
-const dbURI = process.env.DB_URI;
+// Create uploads directory if it doesn't exist
+if (!fs.existsSync('uploads')) {
+    fs.mkdirSync('uploads');
+}
+if (!fs.existsSync('uploads/profiles')) {
+    fs.mkdirSync('uploads/profiles');
+}
+if (!fs.existsSync('uploads/gallery')) {
+    fs.mkdirSync('uploads/gallery');
+}
 
-mongoose.connect(dbURI)
-    .then(() => console.log('✅ Connected to MongoDB Atlas successfully!'))
-    .catch((err) => console.log('❌ Database connection error:', err));
+// MongoDB Connection
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/natures-edge';
+mongoose.connect(MONGODB_URI)
+    .then(() => console.log('✅ MongoDB Connected'))
+    .catch(err => console.error('❌ MongoDB Connection Error:', err));
 
-// ===========================================
-// DATA MODELS (SCHEMAS)
-// ===========================================
-const User = require('./models/User');
-const Booking = require('./models/Booking');
-const Review = require('./models/Review');
+// JWT Secret
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
-// Message Schema
-const messageSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    subject: String,
-    message: String,
-    date: { type: Date, default: Date.now }
-});
-const Message = mongoose.model('Message', messageSchema);
-
-// Price Schema
-const priceSchema = new mongoose.Schema({
-    roomType: { type: String, required: true, unique: true },
-    price: { type: Number, required: true }
-});
-const Price = mongoose.model('Price', priceSchema);
-
-// Gallery Schema
-const gallerySchema = new mongoose.Schema({
-    imageUrl: String,
-    floor: String,
-    area: String,
-    date: { type: Date, default: Date.now }
-});
-const Gallery = mongoose.model('Gallery', gallerySchema);
-
-// ===========================================
-// IMAGE UPLOAD CONFIGURATION (MULTER)
-// ===========================================
-const storage = multer.diskStorage({
-    destination: './uploads/gallery',
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
-    }
-});
-const upload = multer({ storage });
-
-// Profile Picture Storage
-const profileStorage = multer.diskStorage({
-    destination: './uploads/profiles',
-    filename: (req, file, cb) => {
-        cb(null, 'user-' + Date.now() + path.extname(file.originalname));
-    }
-});
-const uploadProfile = multer({ storage: profileStorage });
-
-// ===========================================
-// EMAIL CONFIGURATION (NODEMAILER)
-// ===========================================
+// Email Configuration (use environment variables in production)
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'tharushajayod1@gmail.com',
-        pass: 'lrpfphpuvqiepkkb' 
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 });
 
-// ===========================================
-// ROUTES - AUTHENTICATION
-// ===========================================
+// Import Models
+const User = require('./models/User');
+const Booking = require('./models/Booking');
+const Review = require('./models/Review');
+const Message = require('./models/Message');
+const GalleryPhoto = require('./models/GalleryPhoto');
+const Price = require('./models/Price');
 
-/**
- * User Registration
- * POST /register
- */
-app.post('/register', async (req, res) => {
-    const { username, email, password } = req.body;
-    
+// Multer Configuration for File Uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadPath = req.path.includes('profile') ? 'uploads/profiles' : 'uploads/gallery';
+        cb(null, uploadPath);
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = /jpeg|jpg|png|gif/;
+        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = allowedTypes.test(file.mimetype);
+        if (mimetype && extname) {
+            return cb(null, true);
+        }
+        cb(new Error('Only images are allowed'));
+    }
+});
+
+// ==================== AUTH ROUTES ====================
+
+// Register User
+app.post('/admin/register', async (req, res) => {
     try {
-        // Check if email already exists
-        const existingUser = await User.findOne({ email: email.toLowerCase() });
+        const { username, email, password } = req.body;
+
+        // Check if user exists
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ 
-                message: "Email already exists! Please use another email." 
-            });
+            return res.status(400).json({ message: 'User already exists' });
         }
 
         // Hash password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create new user
-        const newUser = new User({ 
-            username, 
-            email: email.toLowerCase(), 
-            password: hashedPassword,
-            phone: ""
+        // Create user
+        const user = new User({
+            username,
+            email,
+            password: hashedPassword
         });
 
-        await newUser.save();
-        res.status(201).json({ message: "User registered successfully!" });
+        await user.save();
 
-    } catch (err) {
-        console.error("Registration Error:", err);
-        res.status(500).json({ message: "Registration failed due to server error." });
+        // Generate token
+        const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '7d' });
+
+        res.status(201).json({
+            message: 'User registered successfully',
+            token,
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email
+            }
+        });
+    } catch (error) {
+        console.error('Registration error:', error);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
-/**
- * User Login
- * POST /login
- */
-app.post('/login', async (req, res) => {
+// Login User
+app.post('/admin/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Check if admin
-        if (email === "admin@natureedge.com" && password === "Admin@123") {
-            const token = jwt.sign({ role: 'admin' }, 'my_secret_key', { expiresIn: '1h' });
-            return res.json({ 
-                token, 
-                message: 'Admin Login Successful!', 
-                redirectUrl: 'admin-dashboard.html'
-            });
+        // Find user
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ message: 'Invalid credentials' });
         }
 
-        // Check if guest user exists
-        const user = await User.findOne({ email });
-        if (!user || !(await bcrypt.compare(password, user.password))) {
-            return res.status(400).json({ message: 'Invalid Email or Password!' });
+        // Check password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Invalid credentials' });
         }
 
         // Generate token
-        const token = jwt.sign(
-            { id: user._id, username: user.username, email: user.email }, 
-            'my_secret_key', 
-            { expiresIn: '1h' }
-        );
-
-        res.json({ 
-            token, 
-            username: user.username, 
-            email: user.email, 
-            message: 'Login Successful!',
-            redirectUrl: 'dashboard.html'
-        });
-
-    } catch (err) { 
-        res.status(500).json({ error: err.message }); 
-    }
-});
-
-// ===========================================
-// ROUTES - BOOKING MANAGEMENT
-// ===========================================
-
-/**
- * Add New Booking
- * POST /add-booking
- */
-app.post('/add-booking', async (req, res) => {
-    const { checkIn, checkOut, roomType, guests, email, totalPrice, guestDetails } = req.body;
-    
-    try {
-        const newBooking = new Booking({
-            checkIn, checkOut, roomType, guests, email, totalPrice, guestDetails
-        });
-        await newBooking.save();
-
-        // Send WhatsApp notification
-        const messageBody = `🏨 *New Booking Received!*\n\n` +
-                          `👤 *Guest:* ${guestDetails.fullName}\n` +
-                          `🏠 *Villa:* ${roomType}\n` +
-                          `📅 *Dates:* ${new Date(checkIn).toLocaleDateString()} - ${new Date(checkOut).toLocaleDateString()}\n` +
-                          `💰 *Total Price:* $${totalPrice}\n` +
-                          `📞 *Phone:* ${guestDetails.phone}`;
-
-        client.messages.create({
-            from: 'whatsapp:+14155238886',
-            to: 'whatsapp:+94782363530',
-            body: messageBody
-        })
-        .then(message => console.log("✅ WhatsApp sent: " + message.sid))
-        .catch(err => console.error("❌ WhatsApp Error: ", err));
-
-        res.status(201).json({ message: "Booking confirmed and WhatsApp sent!" });
-    } catch (err) {
-        res.status(500).json({ error: "Booking failed" });
-    }
-});
-
-/**
- * Get User Bookings
- * GET /user-bookings?email=
- */
-app.get('/user-bookings', async (req, res) => {
-    const userEmail = req.query.email;
-    try {
-        const bookings = await Booking.find({ email: userEmail });
-        res.json(bookings);
-    } catch (err) {
-        res.status(500).json({ error: "Failed to fetch user bookings" });
-    }
-});
-
-/**
- * Get Booked Dates (Excluding Cancelled)
- * GET /get-booked-dates
- */
-app.get('/get-booked-dates', async (req, res) => {
-    try {
-        const bookings = await Booking.find(
-            { status: { $ne: 'Cancelled' } }, 
-            'checkIn checkOut roomType'
-        );
-        res.json(bookings);
-    } catch (err) {
-        res.status(500).json({ error: "Failed to fetch dates" });
-    }
-});
-
-/**
- * Cancel Booking
- * PUT /cancel-booking/:id
- */
-app.put('/cancel-booking/:id', async (req, res) => {
-    try {
-        const { reason } = req.body;
-        const bookingId = req.params.id;
-
-        // Update booking status
-        const updatedBooking = await Booking.findByIdAndUpdate(
-            bookingId, 
-            { status: 'Cancelled', cancellationReason: reason }, 
-            { new: true }
-        );
-        
-        if (!updatedBooking) {
-            return res.status(404).json({ error: "Booking not found" });
-        }
-
-        // Send cancellation email
-        const mailOptions = {
-            from: 'tharushajayod1@gmail.com',
-            to: ['tharushajayod1@gmail.com', updatedBooking.email],
-            subject: `Booking Cancellation: ${updatedBooking.guestDetails.fullName}`,
-            text: `Booking for ${updatedBooking.roomType} was cancelled.\nReason: ${reason}`
-        };
-        transporter.sendMail(mailOptions);
-
-        res.json({ message: "Booking marked as cancelled" });
-    } catch (err) {
-        res.status(500).json({ error: "Failed to update booking" });
-    }
-});
-
-// ===========================================
-// ROUTES - ADMIN
-// ===========================================
-
-/**
- * Get Admin Statistics
- * GET /admin/stats
- */
-app.get('/admin/stats', async (req, res) => {
-    try {
-        const allBookings = await Booking.find();
-        
-        // Calculate revenue (excluding cancelled)
-        const totalRevenue = allBookings.reduce((sum, b) => {
-            if (b.status !== 'Cancelled') {
-                return sum + (Number(b.totalPrice) || 0);
-            }
-            return sum;
-        }, 0);
-
-        const activeBookingsCount = allBookings.filter(
-            b => b.status !== 'Cancelled'
-        ).length;
-
-        const totalReviews = await Review.countDocuments({});
+        const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '7d' });
 
         res.json({
-            totalBookings: activeBookingsCount,
-            totalRevenue: totalRevenue, 
-            totalReviews: totalReviews 
+            message: 'Login successful',
+            token,
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email
+            }
         });
-    } catch (err) {
-        res.status(500).json({ error: "Failed to fetch stats" });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
-/**
- * Get All Bookings (Admin)
- * GET /admin/all-bookings
- */
+// Send OTP for Email Verification
+app.post('/admin/send-otp', async (req, res) => {
+    try {
+        const { email } = req.body;
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Store OTP in user document
+        await User.findOneAndUpdate(
+            { email },
+            { otp, otpExpires: Date.now() + 10 * 60 * 1000 } // 10 minutes
+        );
+
+        // Send email
+        if (process.env.EMAIL_USER) {
+            await transporter.sendMail({
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: 'Email Verification OTP',
+                html: `<h2>Your OTP Code</h2><p>Your verification code is: <strong>${otp}</strong></p><p>Valid for 10 minutes.</p>`
+            });
+        }
+
+        res.json({ message: 'OTP sent successfully' });
+    } catch (error) {
+        console.error('OTP error:', error);
+        res.status(500).json({ message: 'Failed to send OTP' });
+    }
+});
+
+// Verify OTP
+app.post('/admin/verify-otp', async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+
+        const user = await User.findOne({ email });
+        if (!user || user.otp !== otp || user.otpExpires < Date.now()) {
+            return res.status(400).json({ message: 'Invalid or expired OTP' });
+        }
+
+        user.isEmailVerified = true;
+        user.otp = undefined;
+        user.otpExpires = undefined;
+        await user.save();
+
+        res.json({ message: 'Email verified successfully' });
+    } catch (error) {
+        console.error('Verification error:', error);
+        res.status(500).json({ message: 'Verification failed' });
+    }
+});
+
+// ==================== USER PROFILE ROUTES ====================
+
+// Get User Details
+app.get('/admin/get-user-details', async (req, res) => {
+    try {
+        const { email } = req.query;
+        const user = await User.findOne({ email }).select('-password');
+        
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json(user);
+    } catch (error) {
+        console.error('Get user error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Update Profile
+app.post('/admin/update-profile', async (req, res) => {
+    try {
+        const { email, username, phone, newPassword } = req.body;
+
+        const updateData = { username, phone };
+        
+        if (newPassword) {
+            updateData.password = await bcrypt.hash(newPassword, 10);
+        }
+
+        const user = await User.findOneAndUpdate(
+            { email },
+            updateData,
+            { new: true }
+        ).select('-password');
+
+        res.json({ message: 'Profile updated successfully', user });
+    } catch (error) {
+        console.error('Update profile error:', error);
+        res.status(500).json({ message: 'Update failed' });
+    }
+});
+
+// Update Profile Picture
+app.post('/admin/update-profile-pic', upload.single('profilePic'), async (req, res) => {
+    try {
+        const { email } = req.body;
+        const imageUrl = '/uploads/profiles/' + req.file.filename;
+
+        await User.findOneAndUpdate({ email }, { profilePic: imageUrl });
+
+        res.json({ message: 'Profile picture updated', imageUrl });
+    } catch (error) {
+        console.error('Profile pic error:', error);
+        res.status(500).json({ message: 'Upload failed' });
+    }
+});
+
+// ==================== BOOKING ROUTES ====================
+
+// Add Booking
+app.post('/admin/add-booking', async (req, res) => {
+    try {
+        const bookingData = req.body;
+        const booking = new Booking(bookingData);
+        await booking.save();
+
+        res.status(201).json({ message: 'Booking created successfully', booking });
+    } catch (error) {
+        console.error('Booking error:', error);
+        res.status(500).json({ message: 'Booking failed' });
+    }
+});
+
+// Get All Bookings
 app.get('/admin/all-bookings', async (req, res) => {
     try {
-        const allBookings = await Booking.find().sort({ bookedAt: -1 });
-        res.json(allBookings);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+        const bookings = await Booking.find().sort({ bookedAt: -1 });
+        res.json(bookings);
+    } catch (error) {
+        console.error('Get bookings error:', error);
+        res.status(500).json({ message: 'Failed to fetch bookings' });
     }
 });
 
-/**
- * Get All Messages (Admin)
- * GET /admin/messages
- */
+// Get User Bookings
+app.get('/admin/user-bookings', async (req, res) => {
+    try {
+        const { email } = req.query;
+        const bookings = await Booking.find({ email }).sort({ bookedAt: -1 });
+        res.json(bookings);
+    } catch (error) {
+        console.error('Get user bookings error:', error);
+        res.status(500).json({ message: 'Failed to fetch bookings' });
+    }
+});
+
+// Get Booked Dates
+app.get('/admin/get-booked-dates', async (req, res) => {
+    try {
+        const bookings = await Booking.find({ status: { $ne: 'Cancelled' } })
+            .select('checkIn checkOut roomType');
+        res.json(bookings);
+    } catch (error) {
+        console.error('Get booked dates error:', error);
+        res.status(500).json({ message: 'Failed to fetch dates' });
+    }
+});
+
+// Cancel Booking
+app.put('/admin/cancel-booking/:id', async (req, res) => {
+    try {
+        const { reason } = req.body;
+        const booking = await Booking.findByIdAndUpdate(
+            req.params.id,
+            { 
+                status: 'Cancelled',
+                cancellationReason: reason,
+                cancelledAt: new Date()
+            },
+            { new: true }
+        );
+
+        if (!booking) {
+            return res.status(404).json({ message: 'Booking not found' });
+        }
+
+        res.json({ message: 'Booking cancelled', booking });
+    } catch (error) {
+        console.error('Cancel booking error:', error);
+        res.status(500).json({ message: 'Cancellation failed' });
+    }
+});
+
+// Get Admin Statistics
+app.get('/admin/stats', async (req, res) => {
+    try {
+        const totalBookings = await Booking.countDocuments();
+        const confirmedBookings = await Booking.find({ status: { $ne: 'Cancelled' } });
+        const totalRevenue = confirmedBookings.reduce((sum, b) => sum + (b.totalPrice || 0), 0);
+        const totalReviews = await Review.countDocuments();
+
+        res.json({
+            totalBookings,
+            totalRevenue,
+            totalReviews
+        });
+    } catch (error) {
+        console.error('Stats error:', error);
+        res.status(500).json({ message: 'Failed to fetch stats' });
+    }
+});
+
+// ==================== REVIEW ROUTES ====================
+
+// Add Review
+app.post('/admin/add-review', async (req, res) => {
+    try {
+        const { token, rating, country, comment } = req.body;
+
+        // Verify token
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const user = await User.findById(decoded.userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const review = new Review({
+            username: user.username,
+            country,
+            rating,
+            comment,
+            date: new Date()
+        });
+
+        await review.save();
+        res.status(201).json({ message: 'Review submitted successfully' });
+    } catch (error) {
+        console.error('Review error:', error);
+        res.status(500).json({ message: 'Failed to submit review' });
+    }
+});
+
+// Get Reviews
+app.get('/admin/get-reviews', async (req, res) => {
+    try {
+        const reviews = await Review.find().sort({ date: -1 });
+        res.json(reviews);
+    } catch (error) {
+        console.error('Get reviews error:', error);
+        res.status(500).json({ message: 'Failed to fetch reviews' });
+    }
+});
+
+// Delete Review
+app.delete('/admin/delete-review/:id', async (req, res) => {
+    try {
+        await Review.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Review deleted successfully' });
+    } catch (error) {
+        console.error('Delete review error:', error);
+        res.status(500).json({ message: 'Failed to delete review' });
+    }
+});
+
+// ==================== MESSAGE ROUTES ====================
+
+// Add Message
+app.post('/api/contact', async (req, res) => {
+    try {
+        const message = new Message(req.body);
+        await message.save();
+        res.status(201).json({ message: 'Message sent successfully' });
+    } catch (error) {
+        console.error('Message error:', error);
+        res.status(500).json({ message: 'Failed to send message' });
+    }
+});
+
+// Get Messages
 app.get('/admin/messages', async (req, res) => {
     try {
         const messages = await Message.find().sort({ date: -1 });
         res.json(messages);
-    } catch (err) {
-        res.status(500).json({ error: "Failed to fetch messages" });
+    } catch (error) {
+        console.error('Get messages error:', error);
+        res.status(500).json({ message: 'Failed to fetch messages' });
     }
 });
 
-/**
- * Delete Message (Admin)
- * DELETE /admin/delete-message/:id
- */
+// Delete Message
 app.delete('/admin/delete-message/:id', async (req, res) => {
     try {
-        const messageId = req.params.id;
-        await Message.findByIdAndDelete(messageId);
-        res.status(200).json({ message: "Message deleted successfully" });
-    } catch (err) {
-        res.status(500).json({ error: "Failed to delete message" });
+        await Message.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Message deleted successfully' });
+    } catch (error) {
+        console.error('Delete message error:', error);
+        res.status(500).json({ message: 'Failed to delete message' });
     }
 });
 
-// ===========================================
-// ROUTES - REVIEWS
-// ===========================================
+// ==================== PRICE ROUTES ====================
 
-/**
- * Add Review
- * POST /add-review
- */
-app.post('/add-review', async (req, res) => {
+// Update Prices
+app.post('/admin/update-prices', async (req, res) => {
     try {
-        const { token, rating, comment, country } = req.body;
-        const decoded = jwt.verify(token, 'my_secret_key');
+        const { room1st, roomGF, roomFull } = req.body;
+
+        await Price.findOneAndUpdate(
+            {},
+            {
+                '1st Floor': room1st,
+                'Ground Floor': roomGF,
+                'Full Villa': roomFull
+            },
+            { upsert: true }
+        );
+
+        res.json({ message: 'Prices updated successfully' });
+    } catch (error) {
+        console.error('Update prices error:', error);
+        res.status(500).json({ message: 'Failed to update prices' });
+    }
+});
+
+// Get Prices
+app.get('/admin/get-prices', async (req, res) => {
+    try {
+        let prices = await Price.findOne();
         
-        const newReview = new Review({ 
-            user: decoded.id, 
-            username: decoded.username, 
-            country, 
-            rating, 
-            comment 
-        });
-        
-        await newReview.save();
-        res.status(201).json({ message: "Review added successfully!" });
-    } catch (err) {
-        res.status(500).json({ 
-            message: "Session expired or error. Please login again." 
-        });
+        if (!prices) {
+            prices = new Price({
+                '1st Floor': 150,
+                'Ground Floor': 100,
+                'Full Villa': 250
+            });
+            await prices.save();
+        }
+
+        res.json(prices);
+    } catch (error) {
+        console.error('Get prices error:', error);
+        res.status(500).json({ message: 'Failed to fetch prices' });
     }
 });
 
-/**
- * Get All Reviews
- * GET /get-reviews
- */
-app.get('/get-reviews', async (req, res) => {
-    try {
-        const reviews = await Review.find().sort({ date: -1 });
-        res.json(reviews);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+// ==================== GALLERY ROUTES ====================
 
-/**
- * Delete Review (Admin)
- * DELETE /admin/delete-review/:id
- */
-app.delete('/admin/delete-review/:id', async (req, res) => {
-    try {
-        await Review.findByIdAndDelete(req.params.id);
-        res.status(200).json({ message: "Review deleted successfully" });
-    } catch (err) {
-        res.status(500).json({ error: "Failed to delete review" });
-    }
-});
-
-// ===========================================
-// ROUTES - GALLERY MANAGEMENT
-// ===========================================
-
-/**
- * Upload Gallery Images (Admin)
- * POST /admin/upload-gallery
- */
+// Upload Gallery Photos
 app.post('/admin/upload-gallery', upload.array('images', 10), async (req, res) => {
     try {
         const { floor, area } = req.body;
-        const files = req.files;
-        
-        const savePromises = files.map(file => {
-            const imageUrl = `/uploads/gallery/${file.filename}`;
-            const newImage = new Gallery({ imageUrl, floor, area });
-            return newImage.save();
-        });
-        
-        await Promise.all(savePromises);
-        res.status(200).json({ message: "Images uploaded successfully!" });
-    } catch (err) {
-        res.status(500).json({ error: "Failed to upload images" });
+        const photos = [];
+
+        for (const file of req.files) {
+            const photo = new GalleryPhoto({
+                floor,
+                area,
+                imageUrl: '/uploads/gallery/' + file.filename
+            });
+            await photo.save();
+            photos.push(photo);
+        }
+
+        res.json({ message: 'Photos uploaded successfully', photos });
+    } catch (error) {
+        console.error('Upload gallery error:', error);
+        res.status(500).json({ message: 'Upload failed' });
     }
 });
 
-/**
- * Delete Photo (Admin)
- * DELETE /admin/delete-photo/:id
- */
+// Get Gallery Photos
+app.get('/admin/get-gallery-photos', async (req, res) => {
+    try {
+        const { floor, area } = req.query;
+        const photos = await GalleryPhoto.find({ floor, area });
+        res.json(photos);
+    } catch (error) {
+        console.error('Get gallery error:', error);
+        res.status(500).json({ message: 'Failed to fetch photos' });
+    }
+});
+
+// Delete Photo
 app.delete('/admin/delete-photo/:id', async (req, res) => {
     try {
-        const photo = await Gallery.findById(req.params.id);
+        const photo = await GalleryPhoto.findById(req.params.id);
         
         if (photo) {
+            // Delete file from filesystem
             const filePath = path.join(__dirname, photo.imageUrl);
             if (fs.existsSync(filePath)) {
                 fs.unlinkSync(filePath);
             }
-        }
-        
-        await Gallery.findByIdAndDelete(req.params.id);
-        res.json({ message: "Photo deleted successfully!" });
-    } catch (err) {
-        res.status(500).json({ error: "Failed to delete photo" });
-    }
-});
-
-/**
- * Get Gallery Photos
- * GET /get-gallery-photos?floor=&area=
- */
-app.get('/get-gallery-photos', async (req, res) => {
-    try {
-        const { floor, area } = req.query;
-        const photos = await Gallery.find({ floor, area }).sort({ date: -1 });
-        res.json(photos);
-    } catch (err) {
-        res.status(500).json({ error: "Could not fetch images" });
-    }
-});
-
-// ===========================================
-// ROUTES - CONTACT & MESSAGES
-// ===========================================
-
-/**
- * Submit Contact Form
- * POST /contact
- */
-app.post('/contact', async (req, res) => {
-    const { name, email, subject, message } = req.body;
-    
-    try {
-        const newMessage = new Message({ name, email, subject, message });
-        await newMessage.save();
-
-        const mailOptions = {
-            from: email,
-            to: 'tharushajayod1@gmail.com',
-            subject: `New Inquiry: ${subject}`,
-            text: `From: ${name}\n\n${message}`
-        };
-        
-        transporter.sendMail(mailOptions);
-        res.json({ message: "Message sent and saved!" });
-    } catch (err) {
-        res.status(500).json({ error: "Error handling message" });
-    }
-});
-
-// ===========================================
-// ROUTES - PRICING
-// ===========================================
-
-/**
- * Update Prices (Admin)
- * POST /admin/update-prices
- */
-app.post('/admin/update-prices', async (req, res) => {
-    try {
-        const { room1st, roomGF, roomFull } = req.body;
-        
-        await Price.findOneAndUpdate(
-            { roomType: '1st Floor' }, 
-            { price: room1st }, 
-            { upsert: true }
-        );
-        
-        await Price.findOneAndUpdate(
-            { roomType: 'Ground Floor' }, 
-            { price: roomGF }, 
-            { upsert: true }
-        );
-        
-        await Price.findOneAndUpdate(
-            { roomType: 'Full Villa' }, 
-            { price: roomFull }, 
-            { upsert: true }
-        );
-        
-        res.status(200).json({ message: "Prices updated successfully!" });
-    } catch (err) {
-        res.status(500).json({ error: "Failed to update prices" });
-    }
-});
-
-/**
- * Get Prices
- * GET /get-prices
- */
-app.get('/get-prices', async (req, res) => {
-    try {
-        const prices = await Price.find();
-        const priceMap = {};
-        prices.forEach(p => { 
-            priceMap[p.roomType] = p.price; 
-        });
-        res.json(priceMap);
-    } catch (err) {
-        res.status(500).json({ error: "Failed to fetch prices" });
-    }
-});
-
-// ===========================================
-// ROUTES - PROFILE MANAGEMENT
-// ===========================================
-
-/**
- * Update Profile
- * POST /update-profile
- */
-app.post('/update-profile', async (req, res) => {
-    try {
-        const { email, username, phone, newPassword } = req.body;
-        let updateData = { username, phone };
-
-        // Hash new password if provided
-        if (newPassword) {
-            const salt = await bcrypt.genSalt(10);
-            updateData.password = await bcrypt.hash(newPassword, salt);
+            
+            await GalleryPhoto.findByIdAndDelete(req.params.id);
         }
 
-        const updatedUser = await User.findOneAndUpdate(
-            { email: email },
-            updateData,
-            { new: true }
-        );
-
-        res.json({ 
-            message: "Profile updated successfully!", 
-            user: updatedUser 
-        });
-    } catch (err) {
-        res.status(500).json({ error: "Failed to update profile" });
+        res.json({ message: 'Photo deleted successfully' });
+    } catch (error) {
+        console.error('Delete photo error:', error);
+        res.status(500).json({ message: 'Failed to delete photo' });
     }
 });
 
-/**
- * Update Profile Picture
- * POST /update-profile-pic
- */
-app.post('/update-profile-pic', uploadProfile.single('profilePic'), async (req, res) => {
-    try {
-        const { email } = req.body;
-        const imageUrl = `/uploads/profiles/${req.file.filename}`;
-
-        const updatedUser = await User.findOneAndUpdate(
-            { email: email }, 
-            { profilePic: imageUrl },
-            { new: true }
-        );
-
-        if (!updatedUser) {
-            return res.status(404).json({ error: "User not found" });
-        }
-
-        res.json({ message: "Profile picture updated!", imageUrl });
-    } catch (err) {
-        res.status(500).json({ error: "Upload failed" });
-    }
-});
-
-/**
- * Get User Details
- * GET /get-user-details?email=
- */
-app.get('/get-user-details', async (req, res) => {
-    try {
-        const { email } = req.query;
-        const user = await User.findOne({ email });
-
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        res.json({
-            username: user.username,
-            email: user.email,
-            phone: user.phone,
-            profilePic: user.profilePic,
-            isEmailVerified: user.isEmailVerified
-        });
-    } catch (err) {
-        res.status(500).json({ error: "Server error fetching user details" });
-    }
-});
-
-// ===========================================
-// ROUTES - OTP & PASSWORD RESET
-// ===========================================
-
-/**
- * Send OTP
- * POST /send-otp
- */
-app.post('/send-otp', async (req, res) => {
-    const { email } = req.body;
-    
-    try {
-        const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-        const expires = Date.now() + 600000; // 10 minutes
-
-        const user = await User.findOneAndUpdate(
-            { email }, 
-            { otp: otpCode, otpExpires: expires }
-        );
-
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
-
-        const mailOptions = {
-            from: 'tharushajayod1@gmail.com',
-            to: email,
-            subject: 'Verification Code - The Nature\'s Edge',
-            text: `Your verification code is: ${otpCode}`
-        };
-
-        transporter.sendMail(mailOptions, (error) => {
-            if (error) {
-                return res.status(500).json({ error: "Failed to send email" });
-            }
-            res.json({ message: "OTP sent to your email!" });
-        });
-    } catch (err) {
-        res.status(500).json({ error: "Server error" });
-    }
-});
-
-/**
- * Verify OTP
- * POST /verify-otp
- */
-app.post('/verify-otp', async (req, res) => {
-    const { email, otp } = req.body;
-    
-    try {
-        const user = await User.findOne({ email });
-
-        if (!user || user.otp !== otp || user.otpExpires < Date.now()) {
-            return res.status(400).json({ message: "Invalid or expired OTP!" });
-        }
-
-        await User.findOneAndUpdate(
-            { email }, 
-            { isEmailVerified: true, otp: null, otpExpires: null }
-        );
-        
-        res.json({ message: "Email verified successfully!" });
-    } catch (err) {
-        res.status(500).json({ error: "Verification failed" });
-    }
-});
-
-/**
- * Reset Password
- * POST /reset-password
- */
-app.post('/reset-password', async (req, res) => {
-    const { email, otp, newPassword } = req.body;
-    
-    try {
-        const user = await User.findOne({ email });
-
-        if (!user || user.otp !== otp || user.otpExpires < Date.now()) {
-            return res.status(400).json({ message: "Invalid or expired OTP!" });
-        }
-
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(newPassword, salt);
-
-        await User.findOneAndUpdate(
-            { email }, 
-            { password: hashedPassword, otp: null, otpExpires: null }
-        );
-
-        res.json({ message: "Password reset successful!" });
-    } catch (err) {
-        res.status(500).json({ error: "Server error" });
-    }
-});
-
-// ===========================================
-// SERVER START
-// ===========================================
-
+// Health Check
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.json({ 
+        message: 'The Nature\'s Edge API is running',
+        version: '1.0.0',
+        status: 'active'
+    });
 });
 
+// Error Handler
+app.use((err, req, res, next) => {
+    console.error('Error:', err);
+    res.status(500).json({ message: err.message || 'Internal server error' });
+});
+
+// Start Server
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`\n✅ Server is running on http://localhost:${PORT}`);
-    console.log(`📊 Database: Connected to MongoDB Atlas`);
-    console.log(`🌐 CORS: Enabled`);
-    console.log(`📧 Email: Configured with Gmail`);
-    console.log(`📱 WhatsApp: Configured with Twilio\n`);
+    console.log(`🚀 Server running on port ${PORT}`);
 });
-
-// uploads folder එක ඇතුළේ තියෙන පින්තූර ලෝඩ් කරන්න මේක ඕනේ
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-
