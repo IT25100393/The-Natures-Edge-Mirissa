@@ -2,76 +2,712 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Booking Invoice - The Nature's Edge</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; display: flex; justify-content: center; padding: 50px; }
-        .invoice-card { background: white; width: 600px; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid #003366; }
-        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #eee; padding-bottom: 20px; }
-        .hotel-name { color: #003366; margin: 0; }
-        .details { margin-top: 30px; line-height: 2.0; }
-        .details b { color: #555; width: 180px; display: inline-block; }
-        .price-tag { font-size: 1.5rem; color: #2d5a27; font-weight: bold; margin-top: 20px; border-top: 2px dashed #eee; padding-top: 15px; }
-        .btn-group { margin-top: 40px; display: flex; gap: 15px; }
-        .btn { padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; text-align: center; }
-        .btn-print { background: #003366; color: white; }
-        .btn-home { background: #6c757d; color: white; }
-        @media print { .btn-group { display: none; } body { background: white; padding: 0; } .invoice-card { box-shadow: none; border: none; width: 100%; } }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .invoice-container {
+            width: 100%;
+            max-width: 700px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .invoice-card {
+            background: white;
+            padding: clamp(25px, 5vw, 40px);
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-top: 8px solid #003366;
+            position: relative;
+        }
+
+        /* Success Badge */
+        .success-badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .hotel-info h1 {
+            color: #003366;
+            margin: 0 0 5px 0;
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hotel-info p {
+            color: #666;
+            margin: 0;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+
+        .invoice-meta {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .invoice-number {
+            color: #003366;
+            font-weight: bold;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            margin-bottom: 5px;
+        }
+
+        .invoice-date {
+            color: #666;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+        }
+
+        /* Details Section */
+        .details {
+            margin-top: 30px;
+            line-height: 2.2;
+        }
+
+        .detail-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .detail-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #555;
+            min-width: 180px;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-value {
+            color: #333;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            flex: 1;
+        }
+
+        /* Highlight important values */
+        .detail-value.highlight {
+            color: #003366;
+            font-weight: 600;
+        }
+
+        /* Special Request Section */
+        .special-request {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #003366;
+        }
+
+        .special-request-label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+
+        .special-request-text {
+            color: #666;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            line-height: 1.6;
+        }
+
+        /* Price Section */
+        .price-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px dashed #ddd;
+        }
+
+        .price-breakdown {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+
+        .price-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .price-label {
+            color: #666;
+        }
+
+        .price-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .total-price {
+            background: linear-gradient(135deg, #003366 0%, #0056b3 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 20px rgba(0, 51, 102, 0.3);
+        }
+
+        .total-label {
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+            font-weight: bold;
+        }
+
+        .total-amount {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            font-weight: 800;
+            color: #ffd700;
+        }
+
+        /* Important Notice */
+        .notice-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 25px;
+        }
+
+        .notice-box h4 {
+            color: #856404;
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+        }
+
+        .notice-box p {
+            color: #856404;
+            margin: 0;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            line-height: 1.6;
+        }
+
+        /* Button Group */
+        .btn-group {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-print {
+            background: linear-gradient(135deg, #003366, #0056b3);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 51, 102, 0.3);
+        }
+
+        .btn-print:hover {
+            background: linear-gradient(135deg, #0056b3, #003366);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 51, 102, 0.4);
+        }
+
+        .btn-home {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-home:hover {
+            background: linear-gradient(135deg, #495057, #6c757d);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Footer */
+        .invoice-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: #999;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .invoice-container {
+                max-width: 100%;
+            }
+
+            .invoice-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                padding: 30px;
+            }
+
+            .btn-group,
+            .success-badge {
+                display: none !important;
+            }
+
+            .invoice-footer {
+                page-break-inside: avoid;
+            }
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                flex-direction: column;
+            }
+
+            .invoice-meta {
+                text-align: left;
+            }
+
+            .detail-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .detail-label {
+                min-width: auto;
+            }
+
+            .total-price {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .success-badge {
+                top: -12px;
+                right: 10px;
+                font-size: 0.85rem;
+                padding: 6px 15px;
+            }
+        }
+
+        /* Small mobile devices */
+        @media (max-width: 480px) {
+            .invoice-card {
+                padding: 20px 15px;
+            }
+
+            .detail-label,
+            .detail-value {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Loading state */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        /* Icon styles */
+        .icon {
+            color: #003366;
+        }
     </style>
 </head>
 <body>
-    <div class="invoice-card">
-        <div class="header">
-            <div>
-                <h1 class="hotel-name">The Nature's Edge</h1>
-                <p>Mirissa, Sri Lanka</p>
+    <div class="invoice-container">
+        <div class="invoice-card">
+            <div class="success-badge">
+                <i class="fas fa-check-circle"></i>
+                <span>CONFIRMED</span>
             </div>
-            <div style="text-align: right;">
-                <h3 style="color: #28a745;">BOOKING CONFIRMED</h3>
-                <p id="invoice-date"></p>
+
+            <div class="header">
+                <div class="hotel-info">
+                    <h1>
+                        <i class="fas fa-hotel icon"></i>
+                        The Nature's Edge
+                    </h1>
+                    <p><i class="fas fa-map-marker-alt"></i> Mirissa, Sri Lanka</p>
+                </div>
+                <div class="invoice-meta">
+                    <div class="invoice-number" id="invoice-number">
+                        <i class="fas fa-file-invoice"></i> Invoice #---
+                    </div>
+                    <div class="invoice-date" id="invoice-date"></div>
+                </div>
             </div>
-        </div>
 
-        <div class="details">
-            <p><b>Guest Name:</b> <span id="guest-name"></span></p>
-            <p><b>Country / Nationality:</b> <span id="guest-country"></span></p> <p><b>Villa Option:</b> <span id="room-type"></span></p>
-            <p><b>Check-in:</b> <span id="check-in"></span></p>
-            <p><b>Check-out:</b> <span id="check-out"></span></p>
-            <p><b>No. of Guests:</b> <span id="guests"></span></p>
-            <div class="price-tag">
-                <span>Total Amount:</span> <span id="total-price"></span> </div>
-        </div>
+            <div class="details">
+                <h3 style="color: #003366; margin-bottom: 20px; font-size: clamp(1.1rem, 3vw, 1.3rem);">
+                    <i class="fas fa-user-circle"></i> Guest Information
+                </h3>
 
-        <div class="btn-group">
-            <button class="btn btn-print" onclick="window.print()">Print / Save as PDF</button>
-            <a href="dashboard.html" class="btn btn-home">Back to Dashboard</a>
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-user"></i>
+                        Guest Name:
+                    </div>
+                    <div class="detail-value highlight" id="guest-name">Loading...</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-envelope"></i>
+                        Email:
+                    </div>
+                    <div class="detail-value" id="guest-email">Loading...</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-phone"></i>
+                        Phone:
+                    </div>
+                    <div class="detail-value" id="guest-phone">Loading...</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-flag"></i>
+                        Country:
+                    </div>
+                    <div class="detail-value" id="guest-country">Loading...</div>
+                </div>
+
+                <h3 style="color: #003366; margin: 30px 0 20px; font-size: clamp(1.1rem, 3vw, 1.3rem);">
+                    <i class="fas fa-calendar-check"></i> Booking Details
+                </h3>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-home"></i>
+                        Villa Option:
+                    </div>
+                    <div class="detail-value highlight" id="room-type">Loading...</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-calendar-alt"></i>
+                        Check-in:
+                    </div>
+                    <div class="detail-value" id="check-in">Loading...</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-calendar-alt"></i>
+                        Check-out:
+                    </div>
+                    <div class="detail-value" id="check-out">Loading...</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-users"></i>
+                        Number of Guests:
+                    </div>
+                    <div class="detail-value" id="guests">Loading...</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">
+                        <i class="fas fa-moon"></i>
+                        Total Nights:
+                    </div>
+                    <div class="detail-value" id="total-nights">Loading...</div>
+                </div>
+
+                <!-- Special Request Section -->
+                <div class="special-request" id="special-request-section" style="display: none;">
+                    <div class="special-request-label">
+                        <i class="fas fa-comment-dots"></i>
+                        Special Request:
+                    </div>
+                    <div class="special-request-text" id="special-request">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Price Section -->
+            <div class="price-section">
+                <div class="price-breakdown">
+                    <div class="price-row">
+                        <span class="price-label">
+                            <i class="fas fa-bed"></i> Room Type
+                        </span>
+                        <span class="price-value" id="price-room-type">-</span>
+                    </div>
+                    <div class="price-row">
+                        <span class="price-label">
+                            <i class="fas fa-calculator"></i> Rate per Night
+                        </span>
+                        <span class="price-value" id="rate-per-night">-</span>
+                    </div>
+                    <div class="price-row">
+                        <span class="price-label">
+                            <i class="fas fa-times"></i> Number of Nights
+                        </span>
+                        <span class="price-value" id="breakdown-nights">-</span>
+                    </div>
+                </div>
+
+                <div class="total-price">
+                    <div class="total-label">
+                        <i class="fas fa-dollar-sign"></i> Total Amount:
+                    </div>
+                    <div class="total-amount" id="total-price">$ 0</div>
+                </div>
+            </div>
+
+            <!-- Important Notice -->
+            <div class="notice-box">
+                <h4>
+                    <i class="fas fa-info-circle"></i>
+                    Important Information
+                </h4>
+                <p>
+                    Please present this invoice upon check-in. For any changes or cancellations, 
+                    please contact us at least 48 hours in advance. We look forward to hosting you!
+                </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="btn-group">
+                <button class="btn btn-print" onclick="window.print()">
+                    <i class="fas fa-print"></i>
+                    Print / Save PDF
+                </button>
+                <a href="dashboard.html" class="btn btn-home">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+
+            <!-- Footer -->
+            <div class="invoice-footer">
+                <p>
+                    <i class="fas fa-heart" style="color: #ff6b6b;"></i>
+                    Thank you for choosing The Nature's Edge Mirissa
+                </p>
+                <p style="margin-top: 10px;">
+                    <i class="fas fa-phone-alt"></i> +94 XX XXX XXXX | 
+                    <i class="fas fa-envelope"></i> info@naturesedge.lk
+                </p>
+            </div>
         </div>
     </div>
 
     <script>
-        // LocalStorage එකෙන් දත්ත ලබාගැනීම
-        const bookingRaw = localStorage.getItem('lastBooking');
-        const userRaw = localStorage.getItem('user');
-
-        if (bookingRaw && userRaw) {
-            const booking = JSON.parse(bookingRaw);
-            const user = JSON.parse(userRaw);
-
-            // UI එකට දත්ත ඇතුළත් කිරීම
-            document.getElementById('guest-name').innerText = booking.guestDetails.fullName || user.username;
-            
-            // මෙන්න මෙතනින් තමයි රට පෙන්වන්නේ
-            document.getElementById('guest-country').innerText = booking.guestDetails.nationality || "Not Provided"; 
-            
-            document.getElementById('room-type').innerText = booking.roomType;
-            document.getElementById('check-in').innerText = new Date(booking.checkIn).toLocaleDateString();
-            document.getElementById('check-out').innerText = new Date(booking.checkOut).toLocaleDateString();
-            document.getElementById('guests').innerText = booking.guests;
-            document.getElementById('total-price').innerText = `$ ${Number(booking.totalPrice).toLocaleString()} USD`;
-            
-            document.getElementById('invoice-date').innerText = "Issued: " + new Date().toLocaleDateString();
-        } else {
-            window.location.href = 'dashboard.html';
+        // Generate invoice number
+        function generateInvoiceNumber() {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            return `TNE-${year}${month}-${random}`;
         }
+
+        // Calculate nights between two dates
+        function calculateNights(checkIn, checkOut) {
+            const oneDay = 24 * 60 * 60 * 1000;
+            const firstDate = new Date(checkIn);
+            const secondDate = new Date(checkOut);
+            return Math.round(Math.abs((firstDate - secondDate) / oneDay));
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                weekday: 'long'
+            };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        // Load booking data
+        window.onload = function() {
+            const bookingRaw = localStorage.getItem('lastBooking');
+            const userRaw = localStorage.getItem('user');
+
+            // Redirect if no booking data
+            if (!bookingRaw || !userRaw) {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            try {
+                const booking = JSON.parse(bookingRaw);
+                const user = JSON.parse(userRaw);
+
+                // Set invoice number and date
+                document.getElementById('invoice-number').innerHTML = 
+                    `<i class="fas fa-file-invoice"></i> Invoice #${generateInvoiceNumber()}`;
+                document.getElementById('invoice-date').innerHTML = 
+                    `<i class="fas fa-clock"></i> ${new Date().toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    })}`;
+
+                // Guest Information
+                document.getElementById('guest-name').innerText = 
+                    booking.guestDetails?.fullName || user.username || 'N/A';
+                document.getElementById('guest-email').innerText = 
+                    booking.email || user.email || 'N/A';
+                document.getElementById('guest-phone').innerText = 
+                    booking.guestDetails?.phone || 'Not provided';
+                document.getElementById('guest-country').innerText = 
+                    booking.guestDetails?.nationality || 'Not provided';
+
+                // Booking Details
+                document.getElementById('room-type').innerText = booking.roomType || 'N/A';
+                document.getElementById('check-in').innerText = formatDate(booking.checkIn);
+                document.getElementById('check-out').innerText = formatDate(booking.checkOut);
+                document.getElementById('guests').innerText = 
+                    `${booking.guests} ${booking.guests > 1 ? 'Persons' : 'Person'}`;
+
+                // Calculate nights
+                const nights = calculateNights(booking.checkIn, booking.checkOut);
+                document.getElementById('total-nights').innerText = 
+                    `${nights} ${nights > 1 ? 'Nights' : 'Night'}`;
+                document.getElementById('breakdown-nights').innerText = nights;
+
+                // Special Request
+                if (booking.guestDetails?.specialRequest && booking.guestDetails.specialRequest.trim()) {
+                    document.getElementById('special-request-section').style.display = 'block';
+                    document.getElementById('special-request').innerText = 
+                        booking.guestDetails.specialRequest;
+                }
+
+                // Price Breakdown
+                document.getElementById('price-room-type').innerText = booking.roomType || 'N/A';
+                const ratePerNight = Math.round(booking.totalPrice / nights);
+                document.getElementById('rate-per-night').innerText = 
+                    `$ ${ratePerNight.toLocaleString()} USD`;
+
+                // Total Price
+                document.getElementById('total-price').innerText = 
+                    `$ ${Number(booking.totalPrice).toLocaleString()} USD`;
+
+            } catch (error) {
+                console.error('Error loading booking data:', error);
+                alert('Error loading invoice data. Redirecting to dashboard...');
+                window.location.href = 'dashboard.html';
+            }
+        };
+
+        // Print handling
+        window.onbeforeprint = function() {
+            document.body.style.background = 'white';
+        };
+
+        window.onafterprint = function() {
+            document.body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+        };
     </script>
 </body>
 </html>
