@@ -507,28 +507,24 @@
                 });
         
                 const data = await response.json();
-        
+
+
                 if (response.ok && data.token) {
-                    // ✅ Save token
                     localStorage.setItem('token', data.token);
-                    
-                    // ✅ Save user data (CRITICAL!)
-                    localStorage.setItem('user', JSON.stringify({
-                        email: data.email || email,
-                        username: data.username || email.split('@')[0]
-                    }));
-                    
+                    localStorage.setItem('user', JSON.stringify(data.user));
+
                     // Success
                     loginBtn.innerText = "Login Successful ✅";
                     loginBtn.classList.add('success');
-                    
                     showPopup("Welcome Back!", "Redirecting to dashboard...", "success");
-                    
-                    // Redirect
+                
                     setTimeout(() => {
-                        window.location.href = data.redirectUrl || 'dashboard.html';
+                        if (data.isAdmin === true) {
+                            window.location.href = 'admin-dashboard.html';
+                        } else {
+                            window.location.href = 'dashboard.html';
+                        }
                     }, 1500);
-        
                 } else {
                     showPopup("Login Failed", data.message || "Invalid email or password", "error");
                     loginBtn.innerText = 'Login';
@@ -566,5 +562,6 @@
     </script>
 </body>
 </html>
+
 
 
