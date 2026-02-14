@@ -707,16 +707,6 @@
             }
         })();
         
-        // Browser back button prevent කිරීම
-        window.addEventListener('pageshow', function(event) {
-            // Page එක cache එකෙන් load වුණොත්
-            if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    window.location.replace('login.html');
-                }
-            }
-        });
 
         
         let fp;
@@ -1029,5 +1019,6 @@
     </script>
 </body>
 </html>
+
 
 
