@@ -202,9 +202,13 @@ app.post('/admin/login', async (req, res) => {
         // Generate token
         const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '7d' });
 
+        // ✅ මේ පේළිය අලුතින් එකතු කරන්න - Admin email එකද කියලා බලනවා
+        const isAdmin = user.email === process.env.ADMIN_EMAIL;
+
         res.json({
             message: 'Login successful',
             token,
+            isAdmin: isAdmin, // ✅ මේකත් එකතු කරන්න
             user: {
                 id: user._id,
                 username: user.username,
@@ -632,5 +636,6 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
 
