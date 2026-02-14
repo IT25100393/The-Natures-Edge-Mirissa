@@ -675,6 +675,33 @@
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
+
+        // Authentication Check - Page load වෙද්දී run වෙනවා
+        window.addEventListener('load', function() {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            if (!token || !user) {
+                // Token නැත්නම් login page එකට redirect කරයි
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.replace('login.html'); // replace use කරන නිසා back button වැඩ කරන්නේ නැහැ
+                return;
+            }
+        });
+        
+        // Browser back button prevent කිරීම
+        window.addEventListener('pageshow', function(event) {
+            // Page එක cache එකෙන් load වුණොත්
+            if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.replace('login.html');
+                }
+            }
+        });
+
+        
         let fp;
         let currentPrices = {};
         let allBookingsData = [];
@@ -975,9 +1002,14 @@
         }
 
         function logout() {
+            // සියලු data clear කරයි
             localStorage.clear();
-            window.location.href = 'login.html';
+            sessionStorage.clear();
+            
+            // Browser history වලින් clear කරලා redirect කරයි
+            window.location.replace('login.html'); // back button වැඩ කරන්නේ නැහැ
         }
     </script>
 </body>
 </html>
+
