@@ -758,20 +758,27 @@
 
         // Process review deletion
         async function processDelete() {
+            // Modal එක වහන්න
             closeDeleteModal();
-
+        
+            // Check if ID exists
+            if (!reviewIdToDelete) {
+                showPopup("Error", "No review ID selected!", "error");
+                return;
+            }
+        
             try {
+                // ✅ මෙන්න මේ පේළිය හොඳට බලන්න - ${reviewIdToDelete} නිවැරදිව තියෙන්න ඕනේ
                 const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/delete-review/${reviewIdToDelete}`, {
                     method: 'DELETE'
                 });
-
+        
                 if (res.ok) {
                     showPopup("Deleted!", "The review has been removed successfully.", "success");
-                    setTimeout(() => {
-                        fetchAllReviews();
-                    }, 1000);
+                    fetchAllReviews(); // List එක refresh කරන්න
                 } else {
-                    showPopup("Failed", "Could not delete the review. Please try again.", "error");
+                    const data = await res.json();
+                    showPopup("Failed", data.message || "Could not delete the review.", "error");
                 }
             } catch (err) {
                 console.error('Delete error:', err);
@@ -818,5 +825,6 @@
     </script>
 </body>
 </html>
+
 
 
