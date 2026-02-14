@@ -11,6 +11,13 @@ const path = require('path');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
 
+const twilio = require('twilio');
+
+// මේ විස්තර Twilio Console එකෙන් ලබාගන්න
+const accountSid = process.env.TWILIO_ACCOUNT_SID; 
+const authToken = process.env.TWILIO_AUTH_TOKEN;   
+const client = new twilio(accountSid, authToken);
+
 const app = express();
 
 // Middleware
@@ -333,11 +340,30 @@ app.post('/admin/update-profile-pic', upload.single('profilePic'), async (req, r
 // ==================== BOOKING ROUTES ====================
 
 // Add Booking
+
 app.post('/admin/add-booking', async (req, res) => {
     try {
         const bookingData = req.body;
         const booking = new Booking(bookingData);
         await booking.save();
+
+        // --- Twilio WhatsApp Auto Message ---
+        const myWhatsAppNumber = 'whatsapp:+94717526757'; // ඔයාගේ WhatsApp අංකය
+        const twilioWhatsAppNumber = 'whatsapp:+14155238886'; // Twilio Sandbox Number එක
+
+        client.messages.create({
+            from: twilioWhatsAppNumber,
+            to: myWhatsAppNumber,
+            body: `🏨 *New Booking Alert!*\n\n` +
+                  `👤 *Name:* ${bookingData.guestDetails.fullName}\n` +
+                  `🏠 *Villa:* ${bookingData.roomType}\n` +
+                  `📅 *Dates:* ${new Date(bookingData.checkIn).toLocaleDateString()} to ${new Date(bookingData.checkOut).toLocaleDateString()}\n` +
+                  `🌙 *Nights:* ${totalNights} Night${totalNights > 1 ? 's' : ''}\n` + // මෙතනට Nights එකතු කළා
+                  `💰 *Total:* $${bookingData.totalPrice}`
+        })
+        .then(message => console.log("WhatsApp Message Sent! SID:", message.sid))
+        .catch(err => console.error("Twilio Error:", err));
+        // ------------------------------------
 
         res.status(201).json({ message: 'Booking created successfully', booking });
     } catch (error) {
@@ -345,6 +371,7 @@ app.post('/admin/add-booking', async (req, res) => {
         res.status(500).json({ message: 'Booking failed' });
     }
 });
+
 
 // Get All Bookings
 app.get('/admin/all-bookings', async (req, res) => {
@@ -636,6 +663,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
 
 
