@@ -746,6 +746,7 @@
         // Open delete confirmation modal
         function openDeleteModal(id) {
             reviewIdToDelete = id;
+            console.log("ID to delete:", id); // පරීක්ෂා කිරීමට මෙය එක් කරන්න
             document.getElementById('deleteConfirmModal').style.display = 'flex';
             document.getElementById('confirmDeleteBtn').onclick = processDelete;
         }
@@ -817,4 +818,5 @@
     </script>
 </body>
 </html>
+
 
