@@ -23,8 +23,9 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname, './')));
+
 
 // Create uploads directory if it doesn't exist
 if (!fs.existsSync('uploads')) {
@@ -683,6 +684,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
 
 
