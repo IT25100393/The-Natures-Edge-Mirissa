@@ -528,40 +528,29 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Success - Save token and user data
-                    if (data.token) {
-                        localStorage.setItem('token', data.token);
-                    }
-                    
-                    // Save user information
-                    if (data.username || data.email) {
-                        const userData = {
-                            email: data.email || email
-                        };
-                        if (data.username) {
-                            userData.username = data.username;
-                        }
-                        localStorage.setItem('user', JSON.stringify(userData));
-                    }
-
-                    // Update button
-                    loginBtn.innerText = "Login Successful ✅";
-                    loginBtn.classList.add('success');
-                    
-                    // Show success popup
-                    showPopup(
-                        "Welcome Back!", 
-                        "Login successful! Redirecting to dashboard...", 
-                        "success"
-                    );
-
-                    // Redirect to appropriate dashboard
-                    setTimeout(() => {
-                        const redirectUrl = data.redirectUrl || 'dashboard.html';
-                        window.location.href = redirectUrl;
-                    }, 1500);
-
-                } else {
+            // Save token and user data
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+            }
+            
+            if (data.username || data.email) {
+                const userData = {
+                    email: data.email || email
+                };
+                if (data.username) {
+                    userData.username = data.username;
+                }
+                localStorage.setItem('user', JSON.stringify(userData));
+            }
+        
+            // SUCCESS - දැන් redirect කරන්න
+            console.log('✓ Login successful - Token saved');
+            console.log('✓ Redirecting to:', data.redirectUrl || 'dashboard.html');
+            
+            setTimeout(() => {
+                window.location.href = data.redirectUrl || 'dashboard.html';
+            }, 1500);
+        } else {
                     // Handle login error
                     const errorMessage = data.message || data.error || "Invalid email or password!";
                     
@@ -618,3 +607,4 @@
     </script>
 </body>
 </html>
+
