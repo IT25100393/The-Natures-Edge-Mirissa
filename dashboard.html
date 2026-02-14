@@ -677,18 +677,35 @@
     <script>
 
         // Authentication Check - Page load වෙද්දී run වෙනවා
-        window.addEventListener('load', function() {
-            const token = localStorage.getItem('token');
-            const user = localStorage.getItem('user');
-            
-            if (!token || !user) {
-                // Token නැත්නම් login page එකට redirect කරයි
-                localStorage.clear();
-                sessionStorage.clear();
-                window.location.replace('login.html'); // replace use කරන නිසා back button වැඩ කරන්නේ නැහැ
-                return;
+                // Dashboard Authentication - CORRECTED VERSION
+        (function() {
+            function checkAuth() {
+                const token = localStorage.getItem('token');
+                const user = localStorage.getItem('user');
+                
+                // Debug messages (optional - remove after testing)
+                console.log('Dashboard Auth Check:');
+                console.log('- Token:', token ? '✓ EXISTS' : '✗ MISSING');
+                console.log('- User:', user ? '✓ EXISTS' : '✗ MISSING');
+                
+                // If no token, redirect to login ONCE
+                if (!token || !user) {
+                    console.log('⚠ No authentication - redirecting...');
+                    window.location.replace('login.html');
+                    return false;
+                }
+                
+                console.log('✓ Authentication OK');
+                return true;
             }
-        });
+        
+            // Check ONCE on page load
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', checkAuth);
+            } else {
+                checkAuth();
+            }
+        })();
         
         // Browser back button prevent කිරීම
         window.addEventListener('pageshow', function(event) {
@@ -1001,15 +1018,16 @@
             }
         }
 
+        // Logout Function - පරණ function එක මේකෙන් replace කරන්න
         function logout() {
-            // සියලු data clear කරයි
+            console.log('Logging out...');
             localStorage.clear();
             sessionStorage.clear();
-            
-            // Browser history වලින් clear කරලා redirect කරයි
-            window.location.replace('login.html'); // back button වැඩ කරන්නේ නැහැ
+            window.location.replace('login.html');
         }
+        
     </script>
 </body>
 </html>
+
 
