@@ -124,6 +124,64 @@ app.post('/admin/register', async (req, res) => {
     }
 });
 
+// Add this code to your server.js file, after the login route
+
+// Middleware to verify JWT token
+const verifyToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+
+    if (!token) {
+        return res.status(401).json({ message: 'Access denied. No token provided.' });
+    }
+
+    try {
+        const verified = jwt.verify(token, JWT_SECRET);
+        req.user = verified;
+        next();
+    } catch (err) {
+        res.status(403).json({ message: 'Invalid or expired token' });
+    }
+};
+
+// Admin Verification Route
+app.get('/admin/verify', verifyToken, async (req, res) => {
+    try {
+        // Check if user exists and is admin
+        const user = await User.findById(req.user.userId);
+        
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        
+        // Check if user is admin
+        if (user.email !== process.env.ADMIN_EMAIL) {
+            return res.status(403).json({ message: 'Access denied. Admin only.' });
+        }
+        
+        res.json({ 
+            success: true, 
+            isAdmin: true,
+            email: user.email 
+        });
+    } catch (error) {
+        console.error('Admin verification error:', error);
+        res.status(500).json({ message: 'Server error during verification' });
+    }
+});
+
+// Protected route example - use this middleware on admin routes
+app.get('/admin/protected-route', verifyToken, async (req, res) => {
+    // Check if admin
+    const user = await User.findById(req.user.userId);
+    if (user.email !== process.env.ADMIN_EMAIL) {
+        return res.status(403).json({ message: 'Admin access required' });
+    }
+    
+    // Admin only logic here
+    res.json({ message: 'Admin access granted' });
+});
+
 // Login User
 app.post('/admin/login', async (req, res) => {
     try {
@@ -574,4 +632,5 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
