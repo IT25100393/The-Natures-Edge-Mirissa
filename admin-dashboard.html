@@ -879,6 +879,72 @@
     </div>
 
     <script>
+
+        // Admin Authentication Check
+        window.addEventListener('load', function() {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            // Token check
+            if (!token || !user) {
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.replace('login.html');
+                return;
+            }
+            
+            // Admin බවට verify කරන්න
+            verifyAdminAccess();
+        });
+        
+        // Admin Access Verification Function
+        async function verifyAdminAccess() {
+            try {
+                const token = localStorage.getItem('token');
+                
+                const response = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/verify', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    // Admin නෙමෙයි නම්
+                    alert('Access Denied! Admin privileges required.');
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.replace('login.html');
+                }
+            } catch (error) {
+                console.error('Admin verification failed:', error);
+                alert('Authentication failed. Please login again.');
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.replace('login.html');
+            }
+        }
+        
+        // Browser back button prevent
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.replace('login.html');
+                }
+            }
+        });
+        
+        // Logout Function
+        function logout() {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.replace('login.html');
+        }
+
+
+        
         // Display current date
         document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', {
             weekday: 'long',
@@ -1281,3 +1347,4 @@
     </script>
 </body>
 </html>
+
