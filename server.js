@@ -348,7 +348,7 @@ app.post('/admin/add-booking', async (req, res) => {
         await booking.save();
 
         // --- Twilio WhatsApp Auto Message ---
-        const myWhatsAppNumber = 'whatsapp:+94717526757'; // ඔයාගේ WhatsApp අංකය
+        const myWhatsAppNumber = 'whatsapp:+94782363530'; // ඔයාගේ WhatsApp අංකය
         const twilioWhatsAppNumber = 'whatsapp:+14155238886'; // Twilio Sandbox Number එක
 
         client.messages.create({
@@ -663,6 +663,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
 
 
