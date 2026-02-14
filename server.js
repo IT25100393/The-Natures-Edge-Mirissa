@@ -347,13 +347,12 @@ app.post('/admin/add-booking', async (req, res) => {
         const booking = new Booking(bookingData);
         await booking.save();
 
-        // ✅ 1. Nights ගණන ගණනය කිරීම (මේ කොටස අනිවාර්යයෙන්ම ඕනේ)
+        // 1. Nights ගණනය කිරීම
         const checkIn = new Date(bookingData.checkIn);
         const checkOut = new Date(bookingData.checkOut);
-        const diffTime = Math.abs(checkOut - checkIn);
-        const totalNights = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+        const totalNights = Math.ceil(Math.abs(checkOut - checkIn) / (1000 * 60 * 60 * 24)); 
 
-        // ✅ 2. Twilio විස්තර (Koyeb variables වලින් ගන්නවා)
+        // 2. Twilio Client Configuration
         const accountSid = process.env.TWILIO_ACCOUNT_SID;
         const authToken = process.env.TWILIO_AUTH_TOKEN;
         const client = require('twilio')(accountSid, authToken);
@@ -361,21 +360,30 @@ app.post('/admin/add-booking', async (req, res) => {
         const myWhatsAppNumber = 'whatsapp:+94782363530'; 
         const twilioWhatsAppNumber = 'whatsapp:+14155238886'; 
 
-        // ✅ 3. Message එක යැවීම (.catch එකක් පාවිච්චි කරන නිසා message එක ගියේ නැතත් server එක crash වෙන්නේ නැහැ)
+        // 3. Message Body එක සකස් කිරීම
+        let messageBody = `🏨 *New Booking Received!*\n\n` +
+                          `👤 *Guest:* ${bookingData.guestDetails.fullName}\n` +
+                          `📞 *Phone:* ${bookingData.guestDetails.phone}\n` + // Guest ගේ Phone Number එක
+                          `🏠 *Type:* ${bookingData.roomType}\n` +
+                          `🌙 *Nights:* ${totalNights} Night${totalNights > 1 ? 's' : ''}\n` +
+                          `📅 *Dates:* ${checkIn.toLocaleDateString()} to ${checkOut.toLocaleDateString()}\n` +
+                          `💰 *Total:* $${bookingData.totalPrice}`;
+
+        // Special Request එකක් තිබුණොත් විතරක් පණිවිඩයට එකතු කරනවා
+        if (bookingData.guestDetails.specialRequest && bookingData.guestDetails.specialRequest.trim() !== "") {
+            messageBody += `\n\n📝 *Special Request:* ${bookingData.guestDetails.specialRequest}`;
+        }
+
+        // 4. Message එක යැවීම
         client.messages.create({
             from: twilioWhatsAppNumber,
             to: myWhatsAppNumber,
-            body: `🏨 *New Booking Alert!*\n\n` +
-                  `👤 *Name:* ${bookingData.guestDetails.fullName}\n` +
-                  `🏠 *Villa:* ${bookingData.roomType}\n` +
-                  `🌙 *Nights:* ${totalNights} Night${totalNights > 1 ? 's' : ''}\n` +
-                  `📅 *Dates:* ${checkIn.toLocaleDateString()} to ${checkOut.toLocaleDateString()}\n` +
-                  `💰 *Total:* $${bookingData.totalPrice}`
+            body: messageBody
         })
-        .then(message => console.log("WhatsApp Message Sent! SID:", message.sid))
-        .catch(err => console.error("Twilio Error (Booking saved but WhatsApp failed):", err.message));
+        .then(message => console.log("WhatsApp Sent! SID:", message.sid))
+        .catch(err => console.error("Twilio Error:", err.message));
 
-        // ✅ 4. Database එකට save වුණා නම් සාර්ථකයි කියලා frontend එකට දන්වනවා
+        // Frontend එකට response එක යවනවා
         res.status(201).json({ message: 'Booking created successfully', booking });
 
     } catch (error) {
@@ -675,6 +683,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
 
 
