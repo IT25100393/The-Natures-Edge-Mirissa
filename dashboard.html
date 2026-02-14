@@ -890,8 +890,8 @@
             }
 
             const totalPriceText = document.getElementById('totalPrice').innerText;
-            const priceMatch = totalPriceText.match(/\d+/g);
-            const totalPrice = priceMatch ? Number(priceMatch.join('')) : 0;
+            const priceMatch = totalPriceText.match(/\d+/);
+            const totalPrice = priceMatch ? Number(priceMatch[0]) : 0;
 
             const bookingData = {
                 checkIn: fp.selectedDates[0],
@@ -1013,6 +1013,7 @@
     </script>
 </body>
 </html>
+
 
 
 
