@@ -1,53 +1,50 @@
-require('dotenv').config(); // මේක තමයි මුලින්ම තියෙන්න ඕනේ
-
+require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const multer = require('multer');
+// 🔴 CHANGED: multer import එක තවදුරටත් මෙතන ඕන නැහැ (cloudinary.js එකේ handle කරනවා)
+// const multer = require('multer');  ← REMOVED
 const path = require('path');
-const fs = require('fs');
+// 🔴 CHANGED: fs ඕන නැහැ (local files handle කරන්නේ නැති නිසා)
+// const fs = require('fs');  ← REMOVED
 const nodemailer = require('nodemailer');
-
 const twilio = require('twilio');
 
-// මේ විස්තර Twilio Console එකෙන් ලබාගන්න
-const accountSid = process.env.TWILIO_ACCOUNT_SID; 
-const authToken = process.env.TWILIO_AUTH_TOKEN;   
+// 🆕 NEW: Cloudinary import
+const { cloudinary, uploadProfile, uploadGallery } = require('./config/cloudinary');
+
+// Twilio setup (SAME - වෙනසක් නැහැ)
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = new twilio(accountSid, authToken);
 
 const app = express();
 
-// Middleware
+// Middleware (SAME)
 app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// 🔴 CHANGED: uploads static serve ඕන නැහැ (Cloudinary URLs use කරන නිසා)
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));  ← REMOVED
 app.use(express.static(path.join(__dirname, './')));
 
+// 🔴 REMOVED: uploads directory creation (Cloudinary use කරන නිසා ඕන නැහැ)
+// if (!fs.existsSync('uploads')) { ... }
+// if (!fs.existsSync('uploads/profiles')) { ... }
+// if (!fs.existsSync('uploads/gallery')) { ... }
 
-// Create uploads directory if it doesn't exist
-if (!fs.existsSync('uploads')) {
-    fs.mkdirSync('uploads');
-}
-if (!fs.existsSync('uploads/profiles')) {
-    fs.mkdirSync('uploads/profiles');
-}
-if (!fs.existsSync('uploads/gallery')) {
-    fs.mkdirSync('uploads/gallery');
-}
-
-// MongoDB Connection
+// MongoDB Connection (SAME - වෙනසක් නැහැ)
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/natures-edge';
 mongoose.connect(MONGODB_URI)
     .then(() => console.log('✅ MongoDB Connected'))
     .catch(err => console.error('❌ MongoDB Connection Error:', err));
 
-// JWT Secret
+// JWT Secret (SAME)
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
-// Email Configuration (use environment variables in production)
+// Email Configuration (SAME - වෙනසක් නැහැ)
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -56,7 +53,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// Import Models
+// Import Models (SAME - වෙනසක් නැහැ)
 const User = require('./models/User');
 const Booking = require('./models/Booking');
 const Review = require('./models/Review');
@@ -64,48 +61,26 @@ const Message = require('./models/Message');
 const GalleryPhoto = require('./models/GalleryPhoto');
 const Price = require('./models/Price');
 
-// Multer Configuration for File Uploads
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        const uploadPath = req.path.includes('profile') ? 'uploads/profiles' : 'uploads/gallery';
-        cb(null, uploadPath);
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
-});
+// 🔴 REMOVED: Old multer diskStorage configuration
+// const storage = multer.diskStorage({ ... });
+// const upload = multer({ storage: storage, ... });
+// ↑↑↑ මේ BLOCK එක මුළුමනින්ම DELETE කරන්න
+// ↑↑↑ Cloudinary config එකේ handle කරනවා දැන්
 
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-    fileFilter: (req, file, cb) => {
-        const allowedTypes = /jpeg|jpg|png|gif/;
-        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = allowedTypes.test(file.mimetype);
-        if (mimetype && extname) {
-            return cb(null, true);
-        }
-        cb(new Error('Only images are allowed'));
-    }
-});
+// ==================== AUTH ROUTES ==================== (ALL SAME - වෙනසක් නැහැ)
 
-// ==================== AUTH ROUTES ====================
-
-// Register User
+// Register User (SAME)
 app.post('/admin/register', async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
-        // Check if user exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create user
         const user = new User({
             username,
             email,
@@ -114,7 +89,6 @@ app.post('/admin/register', async (req, res) => {
 
         await user.save();
 
-        // Generate token
         const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '7d' });
 
         res.status(201).json({
@@ -132,12 +106,10 @@ app.post('/admin/register', async (req, res) => {
     }
 });
 
-// Add this code to your server.js file, after the login route
-
-// Middleware to verify JWT token
+// Verify Token Middleware (SAME)
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+    const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
         return res.status(401).json({ message: 'Access denied. No token provided.' });
@@ -152,25 +124,23 @@ const verifyToken = (req, res, next) => {
     }
 };
 
-// Admin Verification Route
+// Admin Verification Route (SAME)
 app.get('/admin/verify', verifyToken, async (req, res) => {
     try {
-        // Check if user exists and is admin
         const user = await User.findById(req.user.userId);
-        
+
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        
-        // Check if user is admin
+
         if (user.email !== process.env.ADMIN_EMAIL) {
             return res.status(403).json({ message: 'Access denied. Admin only.' });
         }
-        
-        res.json({ 
-            success: true, 
+
+        res.json({
+            success: true,
             isAdmin: true,
-            email: user.email 
+            email: user.email
         });
     } catch (error) {
         console.error('Admin verification error:', error);
@@ -178,45 +148,38 @@ app.get('/admin/verify', verifyToken, async (req, res) => {
     }
 });
 
-// Protected route example - use this middleware on admin routes
+// Protected route (SAME)
 app.get('/admin/protected-route', verifyToken, async (req, res) => {
-    // Check if admin
     const user = await User.findById(req.user.userId);
     if (user.email !== process.env.ADMIN_EMAIL) {
         return res.status(403).json({ message: 'Admin access required' });
     }
-    
-    // Admin only logic here
     res.json({ message: 'Admin access granted' });
 });
 
-// Login User
+// Login User (SAME)
 app.post('/admin/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Find user
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
-        // Check password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
-        // Generate token
         const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '7d' });
 
-        // ✅ මේ පේළිය අලුතින් එකතු කරන්න - Admin email එකද කියලා බලනවා
         const isAdmin = user.email === process.env.ADMIN_EMAIL;
 
         res.json({
             message: 'Login successful',
             token,
-            isAdmin: isAdmin, // ✅ මේකත් එකතු කරන්න
+            isAdmin: isAdmin,
             user: {
                 id: user._id,
                 username: user.username,
@@ -229,19 +192,17 @@ app.post('/admin/login', async (req, res) => {
     }
 });
 
-// Send OTP for Email Verification
+// Send OTP (SAME)
 app.post('/admin/send-otp', async (req, res) => {
     try {
         const { email } = req.body;
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-        // Store OTP in user document
         await User.findOneAndUpdate(
             { email },
-            { otp, otpExpires: Date.now() + 10 * 60 * 1000 } // 10 minutes
+            { otp, otpExpires: Date.now() + 10 * 60 * 1000 }
         );
 
-        // Send email
         if (process.env.EMAIL_USER) {
             await transporter.sendMail({
                 from: process.env.EMAIL_USER,
@@ -258,7 +219,7 @@ app.post('/admin/send-otp', async (req, res) => {
     }
 });
 
-// Verify OTP
+// Verify OTP (SAME)
 app.post('/admin/verify-otp', async (req, res) => {
     try {
         const { email, otp } = req.body;
@@ -282,12 +243,12 @@ app.post('/admin/verify-otp', async (req, res) => {
 
 // ==================== USER PROFILE ROUTES ====================
 
-// Get User Details
+// Get User Details (SAME)
 app.get('/admin/get-user-details', async (req, res) => {
     try {
         const { email } = req.query;
         const user = await User.findOne({ email }).select('-password');
-        
+
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -299,13 +260,13 @@ app.get('/admin/get-user-details', async (req, res) => {
     }
 });
 
-// Update Profile
+// Update Profile (SAME)
 app.post('/admin/update-profile', async (req, res) => {
     try {
         const { email, username, phone, newPassword } = req.body;
 
         const updateData = { username, phone };
-        
+
         if (newPassword) {
             updateData.password = await bcrypt.hash(newPassword, 10);
         }
@@ -323,13 +284,29 @@ app.post('/admin/update-profile', async (req, res) => {
     }
 });
 
-// Update Profile Picture
-app.post('/admin/update-profile-pic', upload.single('profilePic'), async (req, res) => {
+// ═══════════════════════════════════════════════════════
+// 🔴🔴🔴 CHANGED: Update Profile Picture - Cloudinary 🔴🔴🔴
+// ═══════════════════════════════════════════════════════
+// කලින්: upload.single('profilePic')  → දැන්: uploadProfile.single('profilePic')
+// කලින්: '/uploads/profiles/' + req.file.filename  → දැන්: req.file.path (Cloudinary URL)
+app.post('/admin/update-profile-pic', uploadProfile.single('profilePic'), async (req, res) => {
     try {
         const { email } = req.body;
-        const imageUrl = '/uploads/profiles/' + req.file.filename;
 
-        await User.findOneAndUpdate({ email }, { profilePic: imageUrl });
+        // 🆕 පරණ profile pic Cloudinary එකෙන් delete කරන්න
+        const user = await User.findOne({ email });
+        if (user && user.profilePicId) {
+            await cloudinary.uploader.destroy(user.profilePicId);
+        }
+
+        // 🔴 CHANGED: Cloudinary URL save කරනවා (local path වෙනුවට)
+        const imageUrl = req.file.path;          // Cloudinary URL
+        const imageId = req.file.filename;       // Cloudinary public_id
+
+        await User.findOneAndUpdate({ email }, {
+            profilePic: imageUrl,
+            profilePicId: imageId               // 🆕 delete කරන්න ඕන වෙලාවට
+        });
 
         res.json({ message: 'Profile picture updated', imageUrl });
     } catch (error) {
@@ -338,44 +315,38 @@ app.post('/admin/update-profile-pic', upload.single('profilePic'), async (req, r
     }
 });
 
-// ==================== BOOKING ROUTES ====================
+// ==================== BOOKING ROUTES ==================== (ALL SAME)
 
-// Add Booking
-
+// Add Booking (SAME - වෙනසක් නැහැ)
 app.post('/admin/add-booking', async (req, res) => {
     try {
         const bookingData = req.body;
         const booking = new Booking(bookingData);
         await booking.save();
 
-        // 1. Nights ගණනය කිරීම
         const checkIn = new Date(bookingData.checkIn);
         const checkOut = new Date(bookingData.checkOut);
-        const totalNights = Math.ceil(Math.abs(checkOut - checkIn) / (1000 * 60 * 60 * 24)); 
+        const totalNights = Math.ceil(Math.abs(checkOut - checkIn) / (1000 * 60 * 60 * 24));
 
-        // 2. Twilio Client Configuration
         const accountSid = process.env.TWILIO_ACCOUNT_SID;
         const authToken = process.env.TWILIO_AUTH_TOKEN;
         const client = require('twilio')(accountSid, authToken);
 
-        const myWhatsAppNumber = 'whatsapp:+94782363530'; 
-        const twilioWhatsAppNumber = 'whatsapp:+14155238886'; 
+        const myWhatsAppNumber = 'whatsapp:+94782363530';
+        const twilioWhatsAppNumber = 'whatsapp:+14155238886';
 
-        // 3. Message Body එක සකස් කිරීම
         let messageBody = `🏨 *New Booking Received!*\n\n` +
-                          `👤 *Guest:* ${bookingData.guestDetails.fullName}\n` +
-                          `📞 *Phone:* ${bookingData.guestDetails.phone}\n` + // Guest ගේ Phone Number එක
-                          `🏠 *Type:* ${bookingData.roomType}\n` +
-                          `🌙 *Nights:* ${totalNights} Night${totalNights > 1 ? 's' : ''}\n` +
-                          `📅 *Dates:* ${checkIn.toLocaleDateString()} to ${checkOut.toLocaleDateString()}\n` +
-                          `💰 *Total:* $${bookingData.totalPrice}`;
+            `👤 *Guest:* ${bookingData.guestDetails.fullName}\n` +
+            `📞 *Phone:* ${bookingData.guestDetails.phone}\n` +
+            `🏠 *Type:* ${bookingData.roomType}\n` +
+            `🌙 *Nights:* ${totalNights} Night${totalNights > 1 ? 's' : ''}\n` +
+            `📅 *Dates:* ${checkIn.toLocaleDateString()} to ${checkOut.toLocaleDateString()}\n` +
+            `💰 *Total:* $${bookingData.totalPrice}`;
 
-        // Special Request එකක් තිබුණොත් විතරක් පණිවිඩයට එකතු කරනවා
         if (bookingData.guestDetails.specialRequest && bookingData.guestDetails.specialRequest.trim() !== "") {
             messageBody += `\n\n📝 *Special Request:* ${bookingData.guestDetails.specialRequest}`;
         }
 
-        // 4. Message එක යැවීම
         client.messages.create({
             from: twilioWhatsAppNumber,
             to: myWhatsAppNumber,
@@ -384,7 +355,6 @@ app.post('/admin/add-booking', async (req, res) => {
         .then(message => console.log("WhatsApp Sent! SID:", message.sid))
         .catch(err => console.error("Twilio Error:", err.message));
 
-        // Frontend එකට response එක යවනවා
         res.status(201).json({ message: 'Booking created successfully', booking });
 
     } catch (error) {
@@ -393,8 +363,7 @@ app.post('/admin/add-booking', async (req, res) => {
     }
 });
 
-
-// Get All Bookings
+// Get All Bookings (SAME)
 app.get('/admin/all-bookings', async (req, res) => {
     try {
         const bookings = await Booking.find().sort({ bookedAt: -1 });
@@ -405,7 +374,7 @@ app.get('/admin/all-bookings', async (req, res) => {
     }
 });
 
-// Get User Bookings
+// Get User Bookings (SAME)
 app.get('/admin/user-bookings', async (req, res) => {
     try {
         const { email } = req.query;
@@ -417,7 +386,7 @@ app.get('/admin/user-bookings', async (req, res) => {
     }
 });
 
-// Get Booked Dates
+// Get Booked Dates (SAME)
 app.get('/admin/get-booked-dates', async (req, res) => {
     try {
         const bookings = await Booking.find({ status: { $ne: 'Cancelled' } })
@@ -429,13 +398,13 @@ app.get('/admin/get-booked-dates', async (req, res) => {
     }
 });
 
-// Cancel Booking
+// Cancel Booking (SAME)
 app.put('/admin/cancel-booking/:id', async (req, res) => {
     try {
         const { reason } = req.body;
         const booking = await Booking.findByIdAndUpdate(
             req.params.id,
-            { 
+            {
                 status: 'Cancelled',
                 cancellationReason: reason,
                 cancelledAt: new Date()
@@ -454,7 +423,7 @@ app.put('/admin/cancel-booking/:id', async (req, res) => {
     }
 });
 
-// Get Admin Statistics
+// Get Admin Statistics (SAME)
 app.get('/admin/stats', async (req, res) => {
     try {
         const totalBookings = await Booking.countDocuments();
@@ -473,14 +442,13 @@ app.get('/admin/stats', async (req, res) => {
     }
 });
 
-// ==================== REVIEW ROUTES ====================
+// ==================== REVIEW ROUTES ==================== (ALL SAME)
 
-// Add Review
+// Add Review (SAME)
 app.post('/admin/add-review', async (req, res) => {
     try {
         const { token, rating, country, comment } = req.body;
 
-        // Verify token
         const decoded = jwt.verify(token, JWT_SECRET);
         const user = await User.findById(decoded.userId);
 
@@ -504,7 +472,7 @@ app.post('/admin/add-review', async (req, res) => {
     }
 });
 
-// Get Reviews
+// Get Reviews (SAME)
 app.get('/admin/get-reviews', async (req, res) => {
     try {
         const reviews = await Review.find().sort({ date: -1 });
@@ -515,7 +483,7 @@ app.get('/admin/get-reviews', async (req, res) => {
     }
 });
 
-// Delete Review
+// Delete Review (SAME)
 app.delete('/admin/delete-review/:id', async (req, res) => {
     try {
         await Review.findByIdAndDelete(req.params.id);
@@ -526,9 +494,9 @@ app.delete('/admin/delete-review/:id', async (req, res) => {
     }
 });
 
-// ==================== MESSAGE ROUTES ====================
+// ==================== MESSAGE ROUTES ==================== (ALL SAME)
 
-// Add Message
+// Add Message (SAME)
 app.post('/api/contact', async (req, res) => {
     try {
         const message = new Message(req.body);
@@ -540,7 +508,7 @@ app.post('/api/contact', async (req, res) => {
     }
 });
 
-// Get Messages
+// Get Messages (SAME)
 app.get('/admin/messages', async (req, res) => {
     try {
         const messages = await Message.find().sort({ date: -1 });
@@ -551,7 +519,7 @@ app.get('/admin/messages', async (req, res) => {
     }
 });
 
-// Delete Message
+// Delete Message (SAME)
 app.delete('/admin/delete-message/:id', async (req, res) => {
     try {
         await Message.findByIdAndDelete(req.params.id);
@@ -562,9 +530,9 @@ app.delete('/admin/delete-message/:id', async (req, res) => {
     }
 });
 
-// ==================== PRICE ROUTES ====================
+// ==================== PRICE ROUTES ==================== (ALL SAME)
 
-// Update Prices
+// Update Prices (SAME)
 app.post('/admin/update-prices', async (req, res) => {
     try {
         const { room1st, roomGF, roomFull } = req.body;
@@ -586,11 +554,11 @@ app.post('/admin/update-prices', async (req, res) => {
     }
 });
 
-// Get Prices
+// Get Prices (SAME)
 app.get('/admin/get-prices', async (req, res) => {
     try {
         let prices = await Price.findOne();
-        
+
         if (!prices) {
             prices = new Price({
                 '1st Floor': 150,
@@ -609,8 +577,12 @@ app.get('/admin/get-prices', async (req, res) => {
 
 // ==================== GALLERY ROUTES ====================
 
-// Upload Gallery Photos
-app.post('/admin/upload-gallery', upload.array('images', 10), async (req, res) => {
+// ═══════════════════════════════════════════════════════
+// 🔴🔴🔴 CHANGED: Upload Gallery Photos - Cloudinary 🔴🔴🔴
+// ═══════════════════════════════════════════════════════
+// කලින්: upload.array('images', 10)  → දැන්: uploadGallery.array('images', 10)
+// කලින්: '/uploads/gallery/' + file.filename  → දැන්: file.path (Cloudinary URL)
+app.post('/admin/upload-gallery', uploadGallery.array('images', 10), async (req, res) => {
     try {
         const { floor, area } = req.body;
         const photos = [];
@@ -619,7 +591,8 @@ app.post('/admin/upload-gallery', upload.array('images', 10), async (req, res) =
             const photo = new GalleryPhoto({
                 floor,
                 area,
-                imageUrl: '/uploads/gallery/' + file.filename
+                imageUrl: file.path,              // 🔴 CHANGED: Cloudinary URL
+                imagePublicId: file.filename       // 🆕 NEW: delete කරන්න ඕන වෙලාවට
             });
             await photo.save();
             photos.push(photo);
@@ -632,7 +605,7 @@ app.post('/admin/upload-gallery', upload.array('images', 10), async (req, res) =
     }
 });
 
-// Get Gallery Photos
+// Get Gallery Photos (SAME)
 app.get('/admin/get-gallery-photos', async (req, res) => {
     try {
         const { floor, area } = req.query;
@@ -644,18 +617,20 @@ app.get('/admin/get-gallery-photos', async (req, res) => {
     }
 });
 
-// Delete Photo
+// ═══════════════════════════════════════════════════════
+// 🔴🔴🔴 CHANGED: Delete Photo - Cloudinary delete 🔴🔴🔴
+// ═══════════════════════════════════════════════════════
+// කලින්: fs.unlinkSync(filePath) → දැන්: cloudinary.uploader.destroy()
 app.delete('/admin/delete-photo/:id', async (req, res) => {
     try {
         const photo = await GalleryPhoto.findById(req.params.id);
-        
+
         if (photo) {
-            // Delete file from filesystem
-            const filePath = path.join(__dirname, photo.imageUrl);
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
+            // 🔴 CHANGED: Cloudinary එකෙන් delete කරනවා (local file delete වෙනුවට)
+            if (photo.imagePublicId) {
+                await cloudinary.uploader.destroy(photo.imagePublicId);
             }
-            
+
             await GalleryPhoto.findByIdAndDelete(req.params.id);
         }
 
@@ -666,29 +641,19 @@ app.delete('/admin/delete-photo/:id', async (req, res) => {
     }
 });
 
-// Health Check
-
-
+// Health Check / Home (SAME)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Error Handler
+// Error Handler (SAME)
 app.use((err, req, res, next) => {
     console.error('Error:', err);
     res.status(500).json({ message: err.message || 'Internal server error' });
 });
 
-// Start Server
+// Start Server (SAME)
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });
-
-
-
-
-
-
-
-
