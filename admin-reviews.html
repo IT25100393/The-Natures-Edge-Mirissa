@@ -363,17 +363,9 @@
             margin-bottom: 20px;
         }
 
-        .success-icon {
-            color: var(--green);
-        }
-
-        .error-icon {
-            color: var(--red);
-        }
-
-        .info-icon {
-            color: var(--blue);
-        }
+        .success-icon { color: var(--green); }
+        .error-icon { color: var(--red); }
+        .info-icon { color: var(--blue); }
 
         .modal-content h2 {
             margin: 0 0 10px 0;
@@ -406,21 +398,10 @@
             transform: translateY(-2px);
         }
 
-        .btn-red {
-            background: var(--red);
-        }
-
-        .btn-red:hover {
-            background: #d63939;
-        }
-
-        .btn-grey {
-            background: #6c757d;
-        }
-
-        .btn-grey:hover {
-            background: #5a6268;
-        }
+        .btn-red { background: var(--red); }
+        .btn-red:hover { background: #d63939; }
+        .btn-grey { background: #6c757d; }
+        .btn-grey:hover { background: #5a6268; }
 
         .modal-btn-group {
             display: flex;
@@ -613,6 +594,9 @@
     </div>
 
     <script>
+        // ✅ API Base URL - works on any deployment (Heroku, Koyeb, localhost)
+        const API_BASE = '';
+
         let reviewIdToDelete = null;
         let allReviews = [];
         let countries = new Set();
@@ -625,7 +609,8 @@
         // Fetch all reviews from server
         async function fetchAllReviews() {
             try {
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/get-reviews');
+                // ✅ CHANGED: Koyeb URL → relative URL
+                const res = await fetch(API_BASE + '/admin/get-reviews');
                 allReviews = await res.json();
                 
                 // Extract unique countries
@@ -643,10 +628,7 @@
                     countryFilter.innerHTML += `<option value="${country}">${country}</option>`;
                 });
 
-                // Calculate and display statistics
                 displayStatistics();
-
-                // Display reviews
                 displayReviews(allReviews);
 
             } catch (err) {
@@ -730,12 +712,10 @@
 
             let filtered = allReviews;
 
-            // Filter by rating
             if (ratingFilter !== 'all') {
                 filtered = filtered.filter(rev => rev.rating === parseInt(ratingFilter));
             }
 
-            // Filter by country
             if (countryFilter !== 'all') {
                 filtered = filtered.filter(rev => rev.country === countryFilter);
             }
@@ -746,7 +726,6 @@
         // Open delete confirmation modal
         function openDeleteModal(id) {
             reviewIdToDelete = id;
-            console.log("ID to delete:", id); // පරීක්ෂා කිරීමට මෙය එක් කරන්න
             document.getElementById('deleteConfirmModal').style.display = 'flex';
             document.getElementById('confirmDeleteBtn').onclick = processDelete;
         }
@@ -757,32 +736,27 @@
         }
 
         // Process review deletion
-        // ✅ 1. Script එකේ උඩම මේ variable එක තියෙනවාද බලන්න
-        // let reviewIdToDelete = null; 
-        
         async function processDelete() {
-            // ⚠️ Modal එකේ ID එක මෙතනින් කෙලින්ම ගන්න එක වඩාත් ආරක්ෂිතයි
-            const id = reviewIdToDelete; 
-        
+            const id = reviewIdToDelete;
+
             if (!id) {
                 showPopup("Error", "No review ID selected!", "error");
                 return;
             }
-        
-            // Modal එක වහන්න
+
             closeDeleteModal();
-        
+
             try {
-                const response = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/delete-review/${id}`, {
+                // ✅ CHANGED: Koyeb URL → relative URL
+                const response = await fetch(API_BASE + `/admin/delete-review/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 });
-        
+
                 if (response.ok) {
                     showPopup("Deleted!", "The review has been removed successfully.", "success");
-                    // List එක refresh කරන්න
                     fetchAllReviews();
                 } else {
                     const result = await response.json();
@@ -792,7 +766,6 @@
                 console.error('Delete error:', err);
                 showPopup("Error", "Server connection failed.", "error");
             } finally {
-                // ID එක reset කරන්න
                 reviewIdToDelete = null;
             }
         }
@@ -836,7 +809,3 @@
     </script>
 </body>
 </html>
-
-
-
-
