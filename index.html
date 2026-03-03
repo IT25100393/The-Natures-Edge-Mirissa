@@ -646,9 +646,13 @@
     </footer>
 
     <script>
+        // ✅ API Base URL - works on any deployment (Heroku, Koyeb, localhost)
+        const API_BASE = '';
+
         async function loadReviews() {
             try {
-                const response = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/get-reviews');
+                // ✅ CHANGED: Koyeb URL → relative URL
+                const response = await fetch(API_BASE + '/admin/get-reviews');
                 const reviews = await response.json();
                 const container = document.getElementById('reviewsList');
                 
@@ -709,7 +713,7 @@
         function moveSlider(direction) {
             const slider = document.getElementById('reviewsList');
             const cardWidth = slider.querySelector('.review-card')?.offsetWidth || 280;
-            const scrollAmount = cardWidth + 20; // card width + gap
+            const scrollAmount = cardWidth + 20;
             slider.scrollBy({ 
                 left: direction * scrollAmount, 
                 behavior: 'smooth' 
@@ -725,5 +729,3 @@
     </script>
 </body>
 </html>
-
-
