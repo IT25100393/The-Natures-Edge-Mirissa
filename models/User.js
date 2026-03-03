@@ -25,6 +25,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    // 🆕 NEW: Cloudinary එකෙන් delete කරන්න මේ ID එක ඕනේ
+    profilePicId: {
+        type: String,
+        default: ''
+    },
     isEmailVerified: {
         type: Boolean,
         default: false
