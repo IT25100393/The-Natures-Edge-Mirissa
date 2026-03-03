@@ -30,7 +30,6 @@
             min-height: 100vh;
         }
 
-        /* --- Sidebar Navigation --- */
         .sidebar {
             width: 260px;
             height: 100vh;
@@ -76,7 +75,6 @@
             padding-left: 30px;
         }
 
-        /* Mobile Sidebar Toggle */
         .sidebar-toggle {
             display: none;
             position: fixed;
@@ -92,7 +90,6 @@
             font-size: 1.2rem;
         }
 
-        /* --- Main Content Area --- */
         .main-content {
             margin-left: 260px;
             width: calc(100% - 260px);
@@ -119,7 +116,6 @@
             font-size: clamp(0.85rem, 2vw, 1rem);
         }
 
-        /* Stats Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -155,7 +151,6 @@
             margin: 10px 0 0 0;
         }
 
-        /* Admin Sections */
         .admin-section {
             background: white;
             padding: clamp(15px, 3vw, 25px);
@@ -173,7 +168,6 @@
             font-size: clamp(1.2rem, 3vw, 1.5rem);
         }
 
-        /* Table Styling */
         .table-container {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -187,8 +181,7 @@
             background: white;
         }
 
-        th,
-        td {
+        th, td {
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #edf2f7;
@@ -207,7 +200,6 @@
             background-color: #f7fafc;
         }
 
-        /* Price Grid */
         .price-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -243,7 +235,6 @@
             background: white;
         }
 
-        /* Gallery Grid */
         .gallery-grid-admin {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -283,7 +274,6 @@
             font-size: clamp(0.8rem, 2vw, 0.9rem);
         }
 
-        /* Message Card */
         .message-card {
             background: #f8fafc;
             border-left: 5px solid var(--primary-green);
@@ -336,7 +326,6 @@
             transform: none;
         }
 
-        /* --- MODALS --- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -364,14 +353,8 @@
         }
 
         @keyframes popIn {
-            from {
-                transform: scale(0.7);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         .modal-icon {
@@ -379,13 +362,8 @@
             margin-bottom: 20px;
         }
 
-        .success-icon {
-            color: var(--green);
-        }
-
-        .error-icon {
-            color: var(--red);
-        }
+        .success-icon { color: var(--green); }
+        .error-icon { color: var(--red); }
 
         .modal-content-popup h2 {
             margin: 0 0 10px 0;
@@ -413,11 +391,8 @@
             font-size: clamp(0.9rem, 2.5vw, 1rem);
         }
 
-        .modal-btn:hover {
-            background: #003d82;
-        }
+        .modal-btn:hover { background: #003d82; }
 
-        /* Gallery Manager Modal */
         .gallery-modal {
             display: none;
             position: fixed;
@@ -460,9 +435,7 @@
             transition: 0.3s;
         }
 
-        .close-modal:hover {
-            color: var(--red);
-        }
+        .close-modal:hover { color: var(--red); }
 
         .upload-area {
             background: #f9f9f9;
@@ -487,11 +460,7 @@
             margin-bottom: 10px;
         }
 
-        /* Upload Progress Bar */
-        .progress-container {
-            display: none;
-            margin-top: 15px;
-        }
+        .progress-container { display: none; margin-top: 15px; }
 
         .progress-bar {
             width: 100%;
@@ -515,11 +484,7 @@
             font-size: 0.9rem;
         }
 
-        .upload-status {
-            margin-top: 10px;
-            color: #666;
-            font-size: 0.9rem;
-        }
+        .upload-status { margin-top: 10px; color: #666; font-size: 0.9rem; }
 
         #currentPhotosList {
             display: grid;
@@ -529,10 +494,7 @@
             padding: 10px;
         }
 
-        .photo-wrapper {
-            position: relative;
-            display: inline-block;
-        }
+        .photo-wrapper { position: relative; display: inline-block; }
 
         .photo-wrapper img {
             width: 100%;
@@ -560,89 +522,36 @@
             transition: 0.3s;
         }
 
-        .delete-btn-photo:hover {
-            background: #d63939;
-            transform: scale(1.1);
-        }
+        .delete-btn-photo:hover { background: #d63939; transform: scale(1.1); }
 
-        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                width: 250px;
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .sidebar-toggle {
-                display: block;
-            }
-
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .price-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .gallery-grid-admin {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            }
-
-            table {
-                font-size: 0.85rem;
-            }
-
-            th, td {
-                padding: 8px 10px;
-            }
+            .sidebar { transform: translateX(-100%); width: 250px; }
+            .sidebar.active { transform: translateX(0); }
+            .sidebar-toggle { display: block; }
+            .main-content { margin-left: 0; width: 100%; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .price-grid { grid-template-columns: 1fr; }
+            .gallery-grid-admin { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+            table { font-size: 0.85rem; }
+            th, td { padding: 8px 10px; }
         }
 
         @media (max-width: 480px) {
-            .gallery-grid-admin {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .admin-section {
-                padding: 15px 10px;
-            }
+            .gallery-grid-admin { grid-template-columns: repeat(2, 1fr); }
+            .admin-section { padding: 15px 10px; }
         }
 
-        /* Loading state */
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #999;
-        }
-
-        /* Action icons */
-        .action-icon {
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 1.1rem;
-        }
-
-        .action-icon:hover {
-            transform: scale(1.2);
-        }
+        .loading { text-align: center; padding: 20px; color: #999; }
+        .action-icon { cursor: pointer; transition: 0.3s; font-size: 1.1rem; }
+        .action-icon:hover { transform: scale(1.2); }
     </style>
 </head>
 <body>
 
-    <!-- Mobile Sidebar Toggle -->
     <button class="sidebar-toggle" onclick="toggleSidebar()">
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Sidebar Navigation -->
     <div class="sidebar" id="sidebar">
         <h2>THE NATURE'S EDGE</h2>
         <a href="admin-dashboard.html" class="active">
@@ -671,14 +580,12 @@
         </a>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
         <div class="header">
             <h1>Admin Dashboard</h1>
             <div id="currentDate"></div>
         </div>
 
-        <!-- Statistics Cards -->
         <div class="stats-grid">
             <div class="stat-card">
                 <h3><i class="fas fa-calendar-check"></i> Total Bookings</h3>
@@ -694,7 +601,6 @@
             </div>
         </div>
 
-        <!-- Bookings Section -->
         <section id="bookings" class="admin-section">
             <h2><i class="fas fa-calendar-check"></i> Detailed Guest Bookings</h2>
             <div class="table-container">
@@ -711,21 +617,17 @@
                         </tr>
                     </thead>
                     <tbody id="bookingList">
-                        <tr>
-                            <td colspan="7" class="loading">Loading bookings...</td>
-                        </tr>
+                        <tr><td colspan="7" class="loading">Loading bookings...</td></tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- Messages Section -->
         <section id="messages" class="admin-section">
             <h2><i class="fas fa-envelope"></i> Guest Messages</h2>
             <div id="messageListContainer" class="loading">Loading messages...</div>
         </section>
 
-        <!-- Price Settings -->
         <section id="prices" class="admin-section">
             <h2><i class="fas fa-tag"></i> Manage Villa Pricing ($)</h2>
             <div class="price-grid">
@@ -747,7 +649,6 @@
             </button>
         </section>
 
-        <!-- Gallery Manager -->
         <section id="gallery" class="admin-section">
             <h2><i class="fas fa-images"></i> Visual Gallery Manager</h2>
             <p style="color: #666; margin-top: -10px; font-size: clamp(0.85rem, 2vw, 0.95rem);">
@@ -759,28 +660,22 @@
             </h3>
             <div class="gallery-grid-admin">
                 <div class="gallery-item" onclick="openGalleryManager('ground', 'Bedroom')">
-                    <img src="Gallery/1a10.jpg" alt="Bedroom">
-                    <p>Bedroom</p>
+                    <img src="Gallery/1a10.jpg" alt="Bedroom"><p>Bedroom</p>
                 </div>
                 <div class="gallery-item" onclick="openGalleryManager('ground', 'Living Room')">
-                    <img src="Gallery/1b1.jpg" alt="Living Room">
-                    <p>Living Room</p>
+                    <img src="Gallery/1b1.jpg" alt="Living Room"><p>Living Room</p>
                 </div>
                 <div class="gallery-item" onclick="openGalleryManager('ground', 'Kitchen')">
-                    <img src="Gallery/1d1.jpg" alt="Kitchen">
-                    <p>Kitchen</p>
+                    <img src="Gallery/1d1.jpg" alt="Kitchen"><p>Kitchen</p>
                 </div>
                 <div class="gallery-item" onclick="openGalleryManager('ground', 'Bathroom')">
-                    <img src="Gallery/1c1.jpg" alt="Bathroom">
-                    <p>Bathroom</p>
+                    <img src="Gallery/1c1.jpg" alt="Bathroom"><p>Bathroom</p>
                 </div>
                 <div class="gallery-item" onclick="openGalleryManager('ground', 'Dining Room')">
-                    <img src="Gallery/1e1.jpg" alt="Dining Room">
-                    <p>Dining Room</p>
+                    <img src="Gallery/1e1.jpg" alt="Dining Room"><p>Dining Room</p>
                 </div>
                 <div class="gallery-item" onclick="openGalleryManager('ground', 'Outside View')">
-                    <img src="Gallery/1f1.jpg" alt="Outside View">
-                    <p>Outside View</p>
+                    <img src="Gallery/1f1.jpg" alt="Outside View"><p>Outside View</p>
                 </div>
             </div>
 
@@ -789,38 +684,30 @@
             </h3>
             <div class="gallery-grid-admin">
                 <div class="gallery-item" onclick="openGalleryManager('first', 'Bedroom No.1')">
-                    <img src="Gallery/2a1.jpg" alt="Bedroom 1">
-                    <p>Bedroom No.1</p>
+                    <img src="Gallery/2a1.jpg" alt="Bedroom 1"><p>Bedroom No.1</p>
                 </div>
                 <div class="gallery-item" onclick="openGalleryManager('first', 'Bedroom No.2')">
-                    <img src="Gallery/2b1.jpg" alt="Bedroom 2">
-                    <p>Bedroom No.2</p>
+                    <img src="Gallery/2b1.jpg" alt="Bedroom 2"><p>Bedroom No.2</p>
                 </div>
                 <div class="gallery-item" onclick="openGalleryManager('first', 'Bathroom')">
-                    <img src="Gallery/2c1.jpg" alt="Bathroom">
-                    <p>Bathroom</p>
+                    <img src="Gallery/2c1.jpg" alt="Bathroom"><p>Bathroom</p>
                 </div>
                 <div class="gallery-item" onclick="openGalleryManager('first', 'Living Room')">
-                    <img src="Gallery/2d1.jpg" alt="Living Room">
-                    <p>Living Room</p>
+                    <img src="Gallery/2d1.jpg" alt="Living Room"><p>Living Room</p>
                 </div>
                 <div class="gallery-item" onclick="openGalleryManager('first', 'Dining Room')">
-                    <img src="Gallery/2e1.jpg" alt="Dining Room">
-                    <p>Dining Room</p>
+                    <img src="Gallery/2e1.jpg" alt="Dining Room"><p>Dining Room</p>
                 </div>
                 <div class="gallery-item" onclick="openGalleryManager('first', 'Kitchenette')">
-                    <img src="Gallery/2f1.jpg" alt="Kitchenette">
-                    <p>Kitchenette</p>
+                    <img src="Gallery/2f1.jpg" alt="Kitchenette"><p>Kitchenette</p>
                 </div>
                 <div class="gallery-item" onclick="openGalleryManager('first', 'Outside View')">
-                    <img src="Gallery/2g1.jpg" alt="Outside View">
-                    <p>Outside View</p>
+                    <img src="Gallery/2g1.jpg" alt="Outside View"><p>Outside View</p>
                 </div>
             </div>
         </section>
     </div>
 
-    <!-- Global Message Modal -->
     <div id="globalModal" class="modal-overlay">
         <div class="modal-content-popup">
             <div id="globalIcon" class="modal-icon"></div>
@@ -830,17 +717,14 @@
         </div>
     </div>
 
-    <!-- Confirm Action Modal -->
     <div id="confirmModal" class="modal-overlay">
         <div class="modal-content-popup">
-            <div class="modal-icon error-icon">
-                <i class="fas fa-exclamation-circle"></i>
-            </div>
+            <div class="modal-icon error-icon"><i class="fas fa-exclamation-circle"></i></div>
             <h2 id="confirmTitle">Confirm Action?</h2>
             <p id="confirmText"></p>
             <div id="reasonArea" style="display:none;">
-                <textarea id="actionReason" 
-                    style="width:100%; height:80px; border-radius:8px; border:1px solid #ddd; padding:10px; margin:10px 0;" 
+                <textarea id="actionReason"
+                    style="width:100%; height:80px; border-radius:8px; border:1px solid #ddd; padding:10px; margin:10px 0;"
                     placeholder="Enter reason (e.g. Maintenance)"></textarea>
             </div>
             <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
@@ -850,20 +734,16 @@
         </div>
     </div>
 
-    <!-- Gallery Manager Modal -->
     <div id="galleryModal" class="gallery-modal">
         <div class="gallery-modal-content">
             <span class="close-modal" onclick="closeGalleryModal()">&times;</span>
             <h2 id="modalTitle">Manage Section</h2>
-
             <div class="upload-area">
                 <label><i class="fas fa-cloud-upload-alt"></i> Upload New Images:</label>
                 <input type="file" id="modalImgFile" accept="image/*" multiple>
                 <button class="btn-update" onclick="uploadFromModal()" id="uploadBtn">
                     <i class="fas fa-upload"></i> UPLOAD NOW
                 </button>
-
-                <!-- Upload Progress -->
                 <div class="progress-container" id="progressContainer">
                     <div class="progress-bar">
                         <div class="progress-fill" id="progressFill">0%</div>
@@ -871,7 +751,6 @@
                     <div class="upload-status" id="uploadStatus"></div>
                 </div>
             </div>
-
             <h3 style="margin-top: 25px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
                 <i class="fas fa-images"></i> Uploaded Photos
             </h3>
@@ -880,12 +759,24 @@
     </div>
 
     <script>
-        // Display current date
+        // ═══════════════════════════════════════════════════════
+        // 🔴 CHANGED: API Base URL
+        // කලින්: const API_BASE = 'https://serious-florie-thenaturesedge-d1a60d22.koyeb.app';
+        // දැන්:   relative URL (same server එකේ serve වෙන නිසා)
+        // ═══════════════════════════════════════════════════════
+        const API_BASE = '';  // 🔴 Empty = relative URL (works on ANY deployment)
+
+        // 🆕 Helper: Image URL handle කරන function
+        // Cloudinary URLs start with "http" - use as-is
+        // Old local paths like "/uploads/..." - add API_BASE prefix
+        function getImageUrl(url) {
+            if (!url) return '';
+            if (url.startsWith('http')) return url;  // Cloudinary URL
+            return API_BASE + url;                    // Legacy local path
+        }
+
         document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
 
         let currentFloor = '';
@@ -893,12 +784,10 @@
         let actionTargetId = '';
         let actionType = '';
 
-        // Toggle sidebar for mobile
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
         }
 
-        // Scroll to section and close sidebar on mobile
         function scrollToSection(id) {
             document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
             if (window.innerWidth <= 768) {
@@ -906,25 +795,21 @@
             }
         }
 
-        // Fetch admin statistics and bookings
         async function fetchAdminData() {
             try {
-                // Fetch statistics
-                const statsRes = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/stats');
+                const statsRes = await fetch(API_BASE + '/admin/stats');       // 🔴 CHANGED
                 const stats = await statsRes.json();
-                
+
                 document.getElementById('statTotalBookings').innerText = stats.totalBookings || 0;
                 document.getElementById('statRevenue').innerText = (stats.totalRevenue || 0).toLocaleString('en-US', {
-                    style: 'currency',
-                    currency: 'USD'
+                    style: 'currency', currency: 'USD'
                 });
                 document.getElementById('statReviews').innerText = stats.totalReviews || 0;
 
-                // Fetch bookings
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/all-bookings');
+                const res = await fetch(API_BASE + '/admin/all-bookings');     // 🔴 CHANGED
                 const bookings = await res.json();
                 const list = document.getElementById('bookingList');
-                
+
                 if (bookings.length === 0) {
                     list.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#999;">No bookings found</td></tr>';
                     return;
@@ -936,7 +821,7 @@
                     const guestName = b.guestDetails?.fullName || 'N/A';
                     const checkIn = new Date(b.checkIn).toLocaleDateString();
                     const checkOut = new Date(b.checkOut).toLocaleDateString();
-                    
+
                     list.innerHTML += `
                         <tr>
                             <td><strong>${guestName}</strong></td>
@@ -950,26 +835,25 @@
                                 </span>
                             </td>
                             <td>
-                                ${!isCancelled 
-                                    ? `<i class="fas fa-trash action-icon" style="color:red;" onclick="openConfirm('cancelBooking', '${b._id}')"></i>` 
+                                ${!isCancelled
+                                    ? `<i class="fas fa-trash action-icon" style="color:red;" onclick="openConfirm('cancelBooking', '${b._id}')"></i>`
                                     : '<span style="color:#999;">---</span>'}
                             </td>
                         </tr>`;
                 });
             } catch (e) {
                 console.error('Error fetching admin data:', e);
-                document.getElementById('bookingList').innerHTML = 
+                document.getElementById('bookingList').innerHTML =
                     '<tr><td colspan="7" style="text-align:center; color:red;">Error loading data</td></tr>';
             }
         }
 
-        // Fetch guest messages
         async function fetchMessages() {
             try {
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/messages');
+                const res = await fetch(API_BASE + '/admin/messages');          // 🔴 CHANGED
                 const messages = await res.json();
                 const container = document.getElementById('messageListContainer');
-                
+
                 if (messages.length === 0) {
                     container.innerHTML = '<p style="text-align:center; color:#999;">No messages yet.</p>';
                     return;
@@ -984,7 +868,7 @@
                             <h4><i class="fas fa-user"></i> From: ${m.name} (${m.email})</h4>
                             <p><strong>Subject:</strong> ${m.subject}</p>
                             <p>${m.message}</p>
-                            <button onclick="openConfirm('deleteMessage', '${m._id}')" 
+                            <button onclick="openConfirm('deleteMessage', '${m._id}')"
                                 style="color:red; border:none; background:none; cursor:pointer; margin-top:10px; font-weight:bold;">
                                 <i class="fas fa-trash"></i> Delete Message
                             </button>
@@ -992,17 +876,16 @@
                 });
             } catch (e) {
                 console.error('Error fetching messages:', e);
-                document.getElementById('messageListContainer').innerHTML = 
+                document.getElementById('messageListContainer').innerHTML =
                     '<p style="text-align:center; color:red;">Error loading messages</p>';
             }
         }
 
-        // Show popup message
         function showPopup(title, text, type) {
             document.getElementById('globalTitle').innerText = title;
             document.getElementById('globalText').innerText = text;
             const icon = document.getElementById('globalIcon');
-            
+
             if (type === 'success') {
                 icon.innerHTML = '<i class="fas fa-check-circle"></i>';
                 icon.className = 'modal-icon success-icon';
@@ -1010,7 +893,7 @@
                 icon.innerHTML = '<i class="fas fa-times-circle"></i>';
                 icon.className = 'modal-icon error-icon';
             }
-            
+
             document.getElementById('globalModal').style.display = 'flex';
         }
 
@@ -1018,17 +901,16 @@
             document.getElementById('globalModal').style.display = 'none';
         }
 
-        // Open confirmation modal
         function openConfirm(type, id) {
             actionType = type;
             actionTargetId = id;
-            
+
             const titles = {
                 'cancelBooking': 'Cancel Booking?',
                 'deleteMessage': 'Delete Message?',
                 'deletePhoto': 'Delete Photo?'
             };
-            
+
             document.getElementById('confirmTitle').innerText = titles[type] || 'Confirm Action?';
             document.getElementById('confirmText').innerText = 'Are you sure? This action cannot be reversed.';
             document.getElementById('reasonArea').style.display = (type === 'cancelBooking') ? 'block' : 'none';
@@ -1041,10 +923,9 @@
             document.getElementById('actionReason').value = '';
         }
 
-        // Execute confirmed action
         async function executeAction() {
             const reason = document.getElementById('actionReason').value.trim();
-            
+
             if (actionType === 'cancelBooking' && !reason) {
                 return showPopup("Wait!", "Please provide a reason for cancellation.", "error");
             }
@@ -1057,13 +938,13 @@
                 let body = null;
 
                 if (actionType === 'cancelBooking') {
-                    url = `https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/cancel-booking/${actionTargetId}`;
+                    url = API_BASE + `/admin/cancel-booking/${actionTargetId}`;   // 🔴 CHANGED
                     method = 'PUT';
                     body = JSON.stringify({ reason });
                 } else if (actionType === 'deleteMessage') {
-                    url = `https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/delete-message/${actionTargetId}`;
+                    url = API_BASE + `/admin/delete-message/${actionTargetId}`;   // 🔴 CHANGED
                 } else if (actionType === 'deletePhoto') {
-                    url = `https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/delete-photo/${actionTargetId}`;
+                    url = API_BASE + `/admin/delete-photo/${actionTargetId}`;     // 🔴 CHANGED
                 }
 
                 const res = await fetch(url, {
@@ -1084,7 +965,6 @@
             }
         }
 
-        // Update prices
         async function updatePrices() {
             const price1st = document.getElementById('price1st').value;
             const priceGF = document.getElementById('priceGF').value;
@@ -1094,17 +974,11 @@
                 return showPopup("Error", "Please fill all price fields!", "error");
             }
 
-            const data = {
-                room1st: price1st,
-                roomGF: priceGF,
-                roomFull: priceFull
-            };
-
             try {
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/update-prices', {
+                const res = await fetch(API_BASE + '/admin/update-prices', {   // 🔴 CHANGED
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({ room1st: price1st, roomGF: priceGF, roomFull: priceFull })
                 });
 
                 if (res.ok) {
@@ -1118,7 +992,6 @@
             }
         }
 
-        // Open gallery manager
         function openGalleryManager(floor, area) {
             currentFloor = floor;
             currentArea = area;
@@ -1133,10 +1006,9 @@
             resetUploadProgress();
         }
 
-        // Load current photos
         async function loadCurrentPhotos(floor, area) {
             try {
-                const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/get-gallery-photos?floor=${floor}&area=${area}`);
+                const res = await fetch(API_BASE + `/admin/get-gallery-photos?floor=${floor}&area=${area}`);  // 🔴 CHANGED
                 const photos = await res.json();
                 const container = document.getElementById('currentPhotosList');
 
@@ -1145,9 +1017,10 @@
                     return;
                 }
 
+                // 🔴🔴🔴 CHANGED: getImageUrl() use කරනවා (Cloudinary full URL handle කරන්න)
                 container.innerHTML = photos.map(p => `
                     <div class="photo-wrapper">
-                        <img src="https://serious-florie-thenaturesedge-d1a60d22.koyeb.app${p.imageUrl}" alt="Gallery photo">
+                        <img src="${getImageUrl(p.imageUrl)}" alt="Gallery photo">
                         <button class="delete-btn-photo" onclick="openConfirm('deletePhoto', '${p._id}')">
                             &times;
                         </button>
@@ -1155,20 +1028,18 @@
                 `).join('');
             } catch (e) {
                 console.error('Error loading photos:', e);
-                document.getElementById('currentPhotosList').innerHTML = 
+                document.getElementById('currentPhotosList').innerHTML =
                     '<p style="color:red;">Error loading photos</p>';
             }
         }
 
-        // Upload photos with progress
         async function uploadFromModal() {
             const files = document.getElementById('modalImgFile').files;
-            
+
             if (!files.length) {
                 return showPopup("Wait", "Please select photos first!", "error");
             }
 
-            // Validate file types
             for (let file of files) {
                 if (!file.type.startsWith('image/')) {
                     return showPopup("Error", "Please select only image files!", "error");
@@ -1193,7 +1064,6 @@
             formData.append('area', currentArea);
 
             try {
-                // Simulate progress (since we can't track real upload progress easily)
                 let progress = 0;
                 const interval = setInterval(() => {
                     if (progress < 90) {
@@ -1204,7 +1074,7 @@
                     }
                 }, 200);
 
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/upload-gallery', {
+                const res = await fetch(API_BASE + '/admin/upload-gallery', {   // 🔴 CHANGED
                     method: 'POST',
                     body: formData
                 });
@@ -1217,7 +1087,7 @@
                     uploadStatus.innerText = '✅ Upload completed successfully!';
                     uploadStatus.style.color = 'green';
                     showPopup("Uploaded!", `${files.length} image(s) added to gallery.`, "success");
-                    
+
                     setTimeout(() => {
                         loadCurrentPhotos(currentFloor, currentArea);
                         resetUploadProgress();
@@ -1240,7 +1110,6 @@
             uploadBtn.innerHTML = '<i class="fas fa-upload"></i> UPLOAD NOW';
         }
 
-        // Reset upload progress
         function resetUploadProgress() {
             setTimeout(() => {
                 document.getElementById('progressContainer').style.display = 'none';
@@ -1251,13 +1120,11 @@
             }, 2000);
         }
 
-        // Initialize on page load
         window.onload = () => {
             fetchAdminData();
             fetchMessages();
-            
-            // Load current prices
-            fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/get-prices')
+
+            fetch(API_BASE + '/admin/get-prices')                              // 🔴 CHANGED
                 .then(r => r.json())
                 .then(p => {
                     document.getElementById('price1st').value = p['1st Floor'] || "";
@@ -1267,14 +1134,13 @@
                 .catch(e => console.error('Error loading prices:', e));
         };
 
-        // Close sidebar when clicking outside on mobile
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');
             const toggle = document.querySelector('.sidebar-toggle');
-            
-            if (window.innerWidth <= 768 && 
-                sidebar.classList.contains('active') && 
-                !sidebar.contains(event.target) && 
+
+            if (window.innerWidth <= 768 &&
+                sidebar.classList.contains('active') &&
+                !sidebar.contains(event.target) &&
                 !toggle.contains(event.target)) {
                 sidebar.classList.remove('active');
             }
@@ -1282,4 +1148,3 @@
     </script>
 </body>
 </html>
-
