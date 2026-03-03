@@ -14,6 +14,11 @@ const galleryPhotoSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    // 🆕 NEW: Cloudinary එකෙන් photo delete කරන්න මේ ID එක ඕනේ
+    imagePublicId: {
+        type: String,
+        default: ''
+    },
     uploadedAt: {
         type: Date,
         default: Date.now
