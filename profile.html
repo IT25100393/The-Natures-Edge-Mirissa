@@ -7,449 +7,177 @@
     <title>My Profile - The Nature's Edge</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
                         url('146292.jpg') no-repeat center center fixed;
             background-size: cover;
-            display: flex;
-            justify-content: center;
-            align-items: center; 
-            min-height: 100vh;
-            padding: 20px;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 20px;
         }
 
-        .profile-card { 
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(15px);
-            padding: clamp(25px, 5vw, 40px);
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3); 
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-            animation: fadeIn 0.5s ease-in;
+        .profile-card {
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px);
+            padding: clamp(25px, 5vw, 40px); border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3); width: 100%;
+            max-width: 500px; text-align: center; animation: fadeIn 0.5s ease-in;
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h2 {
-            color: #2d5a27;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-            font-size: clamp(1.3rem, 4vw, 1.8rem);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            color: #2d5a27; margin-bottom: 25px; border-bottom: 2px solid #eee;
+            padding-bottom: 10px; font-size: clamp(1.3rem, 4vw, 1.8rem);
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
-        /* Profile Picture Section */
-        .profile-pic-section {
-            position: relative;
-            width: 120px;
-            margin: 0 auto 25px;
-        }
+        .profile-pic-section { position: relative; width: 120px; margin: 0 auto 25px; }
 
         #userImg {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid #2d5a27;
-            background: #f0f0f0;
+            width: 120px; height: 120px; border-radius: 50%; object-fit: cover;
+            border: 4px solid #2d5a27; background: #f0f0f0;
         }
 
         .pic-upload-label {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            background: #2d5a27;
-            color: white;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 2px solid white;
-            transition: 0.3s;
+            position: absolute; bottom: 0; right: 0; background: #2d5a27;
+            color: white; width: 35px; height: 35px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; border: 2px solid white; transition: 0.3s;
         }
+        .pic-upload-label:hover { background: #3e7a37; transform: scale(1.1); }
+        #picUpload { display: none; }
 
-        .pic-upload-label:hover {
-            background: #3e7a37;
-            transform: scale(1.1);
-        }
-
-        #picUpload {
-            display: none;
-        }
-
-        /* Form Styles */
-        .form-group {
-            text-align: left;
-            margin-bottom: 15px;
-        }
+        .form-group { text-align: left; margin-bottom: 15px; }
 
         label {
-            display: block;
-            font-weight: bold;
-            color: #2d5a27;
-            margin-bottom: 5px;
-            font-size: clamp(0.9rem, 2vw, 1rem);
+            display: block; font-weight: bold; color: #2d5a27;
+            margin-bottom: 5px; font-size: clamp(0.9rem, 2vw, 1rem);
         }
 
         input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            font-size: clamp(0.9rem, 2vw, 1rem);
-            background: #fdfdfd;
-            transition: 0.3s;
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px;
+            font-size: clamp(0.9rem, 2vw, 1rem); background: #fdfdfd; transition: 0.3s;
         }
+        input:focus { border-color: #2d5a27; outline: none; box-shadow: 0 0 0 3px rgba(45, 90, 39, 0.1); }
+        input:read-only { background: #f0f0f0; cursor: not-allowed; }
 
-        input:focus {
-            border-color: #2d5a27;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(45, 90, 39, 0.1);
-        }
-
-        input:read-only {
-            background: #f0f0f0;
-            cursor: not-allowed;
-        }
-
-        /* Verification Section */
-        .verify-box {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin-top: 8px;
-            flex-wrap: wrap;
-        }
+        .verify-box { display: flex; gap: 10px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
 
         .badge {
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: clamp(0.75rem, 2vw, 0.85rem);
-            font-weight: bold;
-            white-space: nowrap;
+            padding: 5px 10px; border-radius: 5px;
+            font-size: clamp(0.75rem, 2vw, 0.85rem); font-weight: bold; white-space: nowrap;
         }
-
-        .unverified {
-            background: #ffe5e5;
-            color: #d9534f;
-        }
-
-        .verified {
-            background: #e5f9e5;
-            color: #28a745;
-        }
+        .unverified { background: #ffe5e5; color: #d9534f; }
+        .verified { background: #e5f9e5; color: #28a745; }
 
         .btn-verify {
-            background: #0056b3;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: clamp(0.8rem, 2vw, 0.9rem);
-            transition: 0.3s;
-            white-space: nowrap;
+            background: #0056b3; color: white; border: none; padding: 8px 15px;
+            border-radius: 8px; cursor: pointer; font-weight: bold;
+            font-size: clamp(0.8rem, 2vw, 0.9rem); transition: 0.3s; white-space: nowrap;
         }
+        .btn-verify:hover { background: #003d82; transform: translateY(-2px); }
+        .btn-verify:active { transform: translateY(0); }
 
-        .btn-verify:hover {
-            background: #003d82;
-            transform: translateY(-2px);
-        }
-
-        .btn-verify:active {
-            transform: translateY(0);
-        }
-
-        /* Password Change Section */
         .password-section {
-            background: #f9f9f9;
-            padding: clamp(12px, 3vw, 15px);
-            border-radius: 12px;
-            margin-top: 20px;
-            border: 1px solid #eee;
+            background: #f9f9f9; padding: clamp(12px, 3vw, 15px); border-radius: 12px;
+            margin-top: 20px; border: 1px solid #eee;
         }
 
         .password-section-label {
-            color: #666;
-            font-size: clamp(0.75rem, 2vw, 0.85rem);
-            font-weight: bold;
-            display: block;
-            margin-bottom: 10px;
-            text-align: left;
+            color: #666; font-size: clamp(0.75rem, 2vw, 0.85rem); font-weight: bold;
+            display: block; margin-bottom: 10px; text-align: left;
         }
 
-        /* Buttons */
         .btn-update {
-            background: linear-gradient(to right, #2d5a27, #3e7a37);
-            color: white;
-            border: none;
-            padding: clamp(12px, 3vw, 15px);
-            width: 100%;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: clamp(1rem, 3vw, 1.1rem);
-            font-weight: bold;
-            transition: 0.3s;
-            margin-top: 20px;
+            background: linear-gradient(to right, #2d5a27, #3e7a37); color: white;
+            border: none; padding: clamp(12px, 3vw, 15px); width: 100%;
+            border-radius: 10px; cursor: pointer; font-size: clamp(1rem, 3vw, 1.1rem);
+            font-weight: bold; transition: 0.3s; margin-top: 20px;
         }
-
         .btn-update:hover {
             background: linear-gradient(to right, #3e7a37, #2d5a27);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(45, 90, 39, 0.3);
+            transform: translateY(-2px); box-shadow: 0 5px 15px rgba(45, 90, 39, 0.3);
         }
+        .btn-update:active { transform: translateY(0); }
 
-        .btn-update:active {
-            transform: translateY(0);
-        }
-
-        /* Navigation Links */
         .nav-links {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
+            margin-top: 20px; display: flex; justify-content: space-between;
+            flex-wrap: wrap; gap: 10px;
         }
 
         .nav-links a {
-            color: #666;
-            text-decoration: none;
-            font-size: clamp(0.85rem, 2vw, 0.95rem);
-            font-weight: bold;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            color: #666; text-decoration: none; font-size: clamp(0.85rem, 2vw, 0.95rem);
+            font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 5px;
         }
+        .nav-links a:hover { color: #2d5a27; }
+        .nav-links .logout-link { color: #ff4d4d; }
+        .nav-links .logout-link:hover { color: #d63939; }
 
-        .nav-links a:hover {
-            color: #2d5a27;
-        }
-
-        .nav-links .logout-link {
-            color: #ff4d4d;
-        }
-
-        .nav-links .logout-link:hover {
-            color: #d63939;
-        }
-
-        /* Modal Styles */
         .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
+            z-index: 2000; justify-content: center; align-items: center; padding: 15px;
         }
 
         .modal-content {
-            background: white;
-            padding: clamp(25px, 5vw, 35px);
-            border-radius: 20px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            position: relative;
-            animation: popIn 0.3s ease-out;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            background: white; padding: clamp(25px, 5vw, 35px); border-radius: 20px;
+            width: 90%; max-width: 400px; text-align: center; position: relative;
+            animation: popIn 0.3s ease-out; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
         }
 
         @keyframes popIn {
-            from {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
-        .modal-icon {
-            font-size: clamp(45px, 10vw, 60px);
-            margin-bottom: 15px;
-        }
+        .modal-icon { font-size: clamp(45px, 10vw, 60px); margin-bottom: 15px; }
+        .success-icon { color: #28a745; }
+        .error-icon { color: #d9534f; }
+        .otp-icon { color: #0056b3; }
 
-        .success-icon {
-            color: #28a745;
-        }
-
-        .error-icon {
-            color: #d9534f;
-        }
-
-        .otp-icon {
-            color: #0056b3;
-        }
-
-        .modal-content h3 {
-            margin: 0 0 10px 0;
-            color: #333;
-            font-size: clamp(1.2rem, 4vw, 1.5rem);
-        }
-
-        .modal-content p {
-            color: #666;
-            margin: 10px 0;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-        }
+        .modal-content h3 { margin: 0 0 10px 0; color: #333; font-size: clamp(1.2rem, 4vw, 1.5rem); }
+        .modal-content p { color: #666; margin: 10px 0; font-size: clamp(0.9rem, 2.5vw, 1rem); }
 
         .otp-input-box {
-            font-size: clamp(1.2rem, 5vw, 1.5rem);
-            letter-spacing: clamp(5px, 2vw, 10px);
-            text-align: center;
-            border: 2px solid #0056b3 !important;
-            padding: 15px !important;
-            margin: 15px 0;
-            width: 100%;
+            font-size: clamp(1.2rem, 5vw, 1.5rem); letter-spacing: clamp(5px, 2vw, 10px);
+            text-align: center; border: 2px solid #0056b3 !important;
+            padding: 15px !important; margin: 15px 0; width: 100%;
         }
 
-        .modal-btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
+        .modal-btn-group { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
 
         .btn-modal {
-            padding: 12px 25px;
-            border-radius: 10px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            transition: 0.3s;
-            flex: 1;
-            min-width: 120px;
+            padding: 12px 25px; border-radius: 10px; border: none; font-weight: bold;
+            cursor: pointer; font-size: clamp(0.9rem, 2.5vw, 1rem); transition: 0.3s;
+            flex: 1; min-width: 120px;
         }
+        .btn-close { background: #eee; color: #333; }
+        .btn-close:hover { background: #ddd; }
+        .btn-confirm { background: #0056b3; color: white; }
+        .btn-confirm:hover { background: #003d82; }
 
-        .btn-close {
-            background: #eee;
-            color: #333;
-        }
+        .phone-verify-box { display: flex; gap: 10px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
 
-        .btn-close:hover {
-            background: #ddd;
-        }
-
-        .btn-confirm {
-            background: #0056b3;
-            color: white;
-        }
-
-        .btn-confirm:hover {
-            background: #003d82;
-        }
-
-        /* Phone Verification Section */
-        .phone-verify-box {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin-top: 8px;
-            flex-wrap: wrap;
-        }
-
-        /* Mobile Optimizations */
         @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-
-            .profile-card {
-                padding: 20px 15px;
-            }
-
-            .nav-links {
-                flex-direction: column;
-                align-items: center;
-                gap: 15px;
-            }
-
-            .verify-box,
-            .phone-verify-box {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .btn-verify {
-                width: 100%;
-            }
-
-            .modal-btn-group {
-                flex-direction: column;
-            }
-
-            .btn-modal {
-                width: 100%;
-            }
+            body { padding: 10px; }
+            .profile-card { padding: 20px 15px; }
+            .nav-links { flex-direction: column; align-items: center; gap: 15px; }
+            .verify-box, .phone-verify-box { flex-direction: column; align-items: flex-start; }
+            .btn-verify { width: 100%; }
+            .modal-btn-group { flex-direction: column; }
+            .btn-modal { width: 100%; }
         }
 
-        /* Error state for inputs */
-        input.error {
-            border-color: #d9534f !important;
-            background: #fff5f5;
-        }
-
-        input.success {
-            border-color: #28a745 !important;
-        }
-
-        /* Loading state */
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        /* Helper text */
-        .helper-text {
-            font-size: 0.85rem;
-            color: #666;
-            margin-top: 5px;
-            display: block;
-        }
-
-        .error-text {
-            color: #d9534f;
-            font-size: 0.85rem;
-            margin-top: 5px;
-            display: none;
-        }
+        input.error { border-color: #d9534f !important; background: #fff5f5; }
+        input.success { border-color: #28a745 !important; }
+        .loading { opacity: 0.6; pointer-events: none; }
+        .helper-text { font-size: 0.85rem; color: #666; margin-top: 5px; display: block; }
+        .error-text { color: #d9534f; font-size: 0.85rem; margin-top: 5px; display: none; }
     </style>
 </head>
 <body>
@@ -459,9 +187,8 @@
             <i class="fas fa-user-circle"></i>
             My Profile
         </h2>
-        
+
         <form id="profileForm" onsubmit="handleProfileUpdate(event)">
-            <!-- Profile Picture Section -->
             <div class="profile-pic-section">
                 <img id="userImg" src="default-avatar.png" alt="Profile Picture">
                 <label for="picUpload" class="pic-upload-label">
@@ -470,13 +197,11 @@
                 <input type="file" id="picUpload" accept="image/*" onchange="uploadPic()">
             </div>
 
-            <!-- Full Name -->
             <div class="form-group">
                 <label for="profName">Full Name</label>
                 <input type="text" id="profName" required placeholder="Enter your full name">
             </div>
-            
-            <!-- Email Address with Verification -->
+
             <div class="form-group">
                 <label for="profEmail">Email Address</label>
                 <input type="email" id="profEmail" readonly>
@@ -488,7 +213,6 @@
                 </div>
             </div>
 
-            <!-- Phone Number with Verification -->
             <div class="form-group">
                 <label for="profPhone">Phone Number</label>
                 <input type="text" id="profPhone" placeholder="+94 XX XXX XXXX">
@@ -500,7 +224,6 @@
                 </div>
             </div>
 
-            <!-- Password Change Section -->
             <div class="password-section">
                 <span class="password-section-label">
                     <i class="fas fa-key"></i> CHANGE PASSWORD (Optional)
@@ -517,13 +240,11 @@
                 </div>
             </div>
 
-            <!-- Update Button -->
             <button type="submit" class="btn-update">
                 <i class="fas fa-save"></i> UPDATE PROFILE
             </button>
         </form>
 
-        <!-- Navigation Links -->
         <div class="nav-links">
             <a href="dashboard.html">
                 <i class="fas fa-arrow-left"></i> Back to Dashboard
@@ -534,7 +255,6 @@
         </div>
     </div>
 
-    <!-- OTP Verification Modal -->
     <div id="otpModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-icon otp-icon">
@@ -550,7 +270,6 @@
         </div>
     </div>
 
-    <!-- Message Modal -->
     <div id="msgModal" class="modal-overlay">
         <div class="modal-content">
             <div id="msgIcon" class="modal-icon"></div>
@@ -561,46 +280,50 @@
     </div>
 
     <script>
+        // ═══════════════════════════════════════════════════════
+        // 🔴 CHANGED: API Base URL + Image Helper
+        // ═══════════════════════════════════════════════════════
+        const API_BASE = '';
+
+        function getImageUrl(url) {
+            if (!url) return 'default-avatar.png';
+            if (url.startsWith('http')) return url;   // Cloudinary URL
+            return API_BASE + url;                     // Legacy local path
+        }
+
         const user = JSON.parse(localStorage.getItem('user'));
-        
+
         window.onload = async () => {
-            // Check authentication
             if (!user) {
                 window.location.href = 'login.html';
                 return;
             }
-            
-            // Set default values
+
             document.getElementById('profName').value = user.username;
             document.getElementById('profEmail').value = user.email;
-            
-            // Load user details from server
+
             try {
-                const res = await fetch(`https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/get-user-details?email=${user.email}`);
+                const res = await fetch(API_BASE + `/admin/get-user-details?email=${user.email}`);  // 🔴 CHANGED
                 const data = await res.json();
-                
+
                 if (res.ok) {
-                    // Update phone number
                     if (data.phone) {
                         document.getElementById('profPhone').value = data.phone;
-                        // Show phone verification option
                         document.getElementById('phoneStatus').style.display = 'inline-block';
                         document.getElementById('verifyPhoneBtn').style.display = 'inline-block';
                     }
-                    
-                    // Update profile picture
+
+                    // 🔴🔴🔴 CHANGED: getImageUrl() use කරනවා
                     if (data.profilePic) {
-                        document.getElementById('userImg').src = `https://serious-florie-thenaturesedge-d1a60d22.koyeb.app${data.profilePic}`;
+                        document.getElementById('userImg').src = getImageUrl(data.profilePic);
                     }
 
-                    // Update email verification status
                     if (data.isEmailVerified) {
                         document.getElementById('emailStatus').className = "badge verified";
                         document.getElementById('emailStatus').innerHTML = '<i class="fas fa-check-circle"></i> Verified';
                         document.getElementById('verifyBtn').style.display = "none";
                     }
 
-                    // Update phone verification status
                     if (data.isPhoneVerified) {
                         document.getElementById('phoneStatus').className = "badge verified";
                         document.getElementById('phoneStatus').innerHTML = '<i class="fas fa-check-circle"></i> Verified';
@@ -612,12 +335,11 @@
             }
         };
 
-        // Show message modal
         function showMsg(title, text, type) {
             document.getElementById('msgTitle').innerText = title;
             document.getElementById('msgText').innerText = text;
             const iconDiv = document.getElementById('msgIcon');
-            
+
             if (type === 'success') {
                 iconDiv.innerHTML = '<i class="fas fa-check-circle"></i>';
                 iconDiv.className = 'modal-icon success-icon';
@@ -625,11 +347,10 @@
                 iconDiv.innerHTML = '<i class="fas fa-times-circle"></i>';
                 iconDiv.className = 'modal-icon error-icon';
             }
-            
+
             document.getElementById('msgModal').style.display = 'flex';
         }
 
-        // Close modal
         function closeModal(id) {
             document.getElementById(id).style.display = 'none';
             if (id === 'otpModal') {
@@ -637,14 +358,12 @@
             }
         }
 
-        // Request email OTP
         async function requestOTP() {
-            // Show OTP modal immediately
             document.getElementById('otpModal').style.display = 'flex';
             window.verifyingType = 'email';
 
             try {
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/send-otp', {
+                const res = await fetch(API_BASE + '/admin/send-otp', {              // 🔴 CHANGED
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: user.email })
@@ -660,25 +379,24 @@
             }
         }
 
-        // Request phone OTP
         async function requestPhoneOTP() {
             const phone = document.getElementById('profPhone').value.trim();
-            
+
             if (!phone) {
                 showMsg("Error", "Please enter a phone number first!", "error");
                 return;
             }
 
             try {
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/send-sms-otp', {
+                const res = await fetch(API_BASE + '/admin/send-sms-otp', {          // 🔴 CHANGED
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        phone: phone, 
+                    body: JSON.stringify({
+                        phone: phone,
                         email: user.email
                     })
                 });
-                
+
                 if (res.ok) {
                     document.getElementById('otpModal').style.display = 'flex';
                     window.verifyingType = 'phone';
@@ -690,10 +408,9 @@
             }
         }
 
-        // Verify OTP
         async function verifyOTP() {
             const otp = document.getElementById('otpCode').value.trim();
-            
+
             if (!otp || otp.length !== 6) {
                 showMsg("Error", "Please enter a valid 6-digit code!", "error");
                 return;
@@ -701,13 +418,14 @@
 
             const email = user.email;
             const phone = document.getElementById('profPhone').value;
-            
-            const url = window.verifyingType === 'phone' 
-                ? 'https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/verify-phone-otp' 
-                : 'https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/verify-otp';
-            
-            const bodyData = window.verifyingType === 'phone' 
-                ? { phone, otp } 
+
+            // 🔴 CHANGED: API_BASE use කරනවා
+            const url = window.verifyingType === 'phone'
+                ? API_BASE + '/admin/verify-phone-otp'
+                : API_BASE + '/admin/verify-otp';
+
+            const bodyData = window.verifyingType === 'phone'
+                ? { phone, otp }
                 : { email, otp };
 
             try {
@@ -730,22 +448,19 @@
             }
         }
 
-        // Handle profile update
         async function handleProfileUpdate(event) {
             event.preventDefault();
-            
+
             const newName = document.getElementById('profName').value.trim();
             const newPhone = document.getElementById('profPhone').value.trim();
             const pass1 = document.getElementById('newPass').value;
             const pass2 = document.getElementById('confirmPass').value;
 
-            // Validate name
             if (!newName) {
                 showMsg("Error", "Please enter your full name!", "error");
                 return;
             }
 
-            // Password validation
             if (pass1 !== "" || pass2 !== "") {
                 if (pass1 !== pass2) {
                     showMsg("Match Error", "Passwords do not match! Please check again.", "error");
@@ -760,7 +475,6 @@
                 }
             }
 
-            // Clear error states
             document.getElementById('confirmPass').classList.remove('error');
             document.getElementById('newPass').classList.remove('error');
             document.getElementById('passwordError').style.display = 'none';
@@ -773,22 +487,20 @@
             };
 
             try {
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/update-profile', {
+                const res = await fetch(API_BASE + '/admin/update-profile', {        // 🔴 CHANGED
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(updateData)
                 });
-                
+
                 if (res.ok) {
                     user.username = newName;
                     localStorage.setItem('user', JSON.stringify(user));
                     showMsg("Success", "Profile updated successfully!", "success");
-                    
-                    // Clear password fields
+
                     document.getElementById('newPass').value = "";
                     document.getElementById('confirmPass').value = "";
-                    
-                    // Show phone verification if phone was added
+
                     if (newPhone && !document.getElementById('phoneStatus').style.display) {
                         document.getElementById('phoneStatus').style.display = 'inline-block';
                         document.getElementById('verifyPhoneBtn').style.display = 'inline-block';
@@ -802,20 +514,20 @@
             }
         }
 
-        // Upload profile picture
+        // ═══════════════════════════════════════════════════════
+        // 🔴🔴🔴 CHANGED: Upload profile pic + handle Cloudinary URL
+        // ═══════════════════════════════════════════════════════
         async function uploadPic() {
             const fileInput = document.getElementById('picUpload');
             if (fileInput.files.length === 0) return;
 
             const file = fileInput.files[0];
-            
-            // Validate file type
+
             if (!file.type.startsWith('image/')) {
                 showMsg("Error", "Please select a valid image file!", "error");
                 return;
             }
 
-            // Validate file size (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
                 showMsg("Error", "Image size must be less than 5MB!", "error");
                 return;
@@ -826,15 +538,16 @@
             formData.append('email', user.email);
 
             try {
-                const res = await fetch('https://serious-florie-thenaturesedge-d1a60d22.koyeb.app/admin/update-profile-pic', {
+                const res = await fetch(API_BASE + '/admin/update-profile-pic', {    // 🔴 CHANGED
                     method: 'POST',
                     body: formData
                 });
-                
+
                 const data = await res.json();
-                
+
                 if (res.ok) {
-                    document.getElementById('userImg').src = `https://serious-florie-thenaturesedge-d1a60d22.koyeb.app${data.imageUrl}`;
+                    // 🔴🔴🔴 CHANGED: getImageUrl() use කරනවා (Cloudinary full URL handle)
+                    document.getElementById('userImg').src = getImageUrl(data.imageUrl);
                     showMsg("Success", "Profile picture updated successfully!", "success");
                 } else {
                     showMsg("Error", "Upload failed. Please try again.", "error");
@@ -845,7 +558,6 @@
             }
         }
 
-        // Logout function
         function logout() {
             if (confirm("Are you sure you want to logout?")) {
                 localStorage.clear();
@@ -853,11 +565,10 @@
             }
         }
 
-        // Add input validation on password fields
         document.getElementById('confirmPass').addEventListener('input', function() {
             const pass1 = document.getElementById('newPass').value;
             const pass2 = this.value;
-            
+
             if (pass2 && pass1 !== pass2) {
                 this.classList.add('error');
                 document.getElementById('passwordError').style.display = 'block';
@@ -867,9 +578,7 @@
             }
         });
 
-        // Phone number format helper
         document.getElementById('profPhone').addEventListener('input', function(e) {
-            // Show phone verification buttons when phone is entered
             if (this.value.trim()) {
                 document.getElementById('phoneStatus').style.display = 'inline-block';
                 document.getElementById('verifyPhoneBtn').style.display = 'inline-block';
@@ -878,4 +587,3 @@
     </script>
 </body>
 </html>
-
